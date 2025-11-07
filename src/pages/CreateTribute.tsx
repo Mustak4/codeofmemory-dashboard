@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, ArrowLeft, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const CreateTribute = () => {
   const [step, setStep] = useState(1);
@@ -29,14 +31,7 @@ const CreateTribute = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <Link to="/" className="text-lg font-serif text-memory hover:text-earth transition-colors">
-            CodeOfMemory
-          </Link>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-6 py-16 max-w-3xl">
         {/* Progress Indicator */}
@@ -172,6 +167,7 @@ const CreateTribute = () => {
           </div>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 };

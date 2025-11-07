@@ -4,6 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Heart, Calendar } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Example memorial data
 const memorialData = {
@@ -52,12 +54,7 @@ const Memorial = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-6 py-4">
-          <h2 className="text-lg font-serif text-memory">CodeOfMemory</h2>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-6 py-16 max-w-4xl">
         {/* Memorial Header */}
@@ -132,14 +129,7 @@ const Memorial = () => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-8 bg-muted/20 mt-16">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            Created with love on CodeOfMemory
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

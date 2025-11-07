@@ -2,11 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heart, QrCode, Clock, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import heroBackground from "@/assets/hero-background.jpg";
 
 const Index = () => {
   return (
     <div className="min-h-screen">
+      <Header />
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         {/* Background Image with Overlay */}
@@ -107,14 +110,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 py-12 bg-muted/20">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2025 CodeOfMemory. Preserving memories with dignity.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
