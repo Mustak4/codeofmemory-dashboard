@@ -30,7 +30,7 @@ const Contact = () => {
     mainEntity: {
       "@type": "Organization",
       name: "CodeOfMemory",
-      legalName: "KKOSTOV LTD trading as CodeOfMemory",
+      legalName: "CodeOfMemory",
       address: {
         "@type": "PostalAddress",
         addressLocality: "London",
@@ -215,7 +215,6 @@ const Contact = () => {
                   <div>
                     <p className="text-sm text-muted-foreground">Address</p>
                     <address className="text-memory not-italic">
-                      KKOSTOV LTD<br />
                       London, United Kingdom
                     </address>
                   </div>

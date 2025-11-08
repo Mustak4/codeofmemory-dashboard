@@ -6,7 +6,7 @@ export const getLocalBusinessSchema = () => {
     "@type": "LocalBusiness",
     "@id": "https://codeofmemory.com/#organization",
     name: "CodeOfMemory",
-    legalName: "KKOSTOV LTD trading as CodeOfMemory",
+    legalName: "CodeOfMemory",
     url: "https://codeofmemory.com",
     logo: "https://codeofmemory.com/logo.png",
     image: "https://codeofmemory.com/logo.png",

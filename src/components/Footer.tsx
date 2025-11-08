@@ -96,10 +96,6 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 text-sm">
                 <MapPin className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <address className="text-muted-foreground not-italic">
-                  KKOSTOV LTD<br />
-                  London, United Kingdom
-                </address>
               </li>
             </ul>
             <div className="flex gap-3">
@@ -118,7 +114,7 @@ const Footer = () => {
 
         <div className="pt-8 border-t border-border/50 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2025 KKOSTOV LTD trading as CodeOfMemory. All rights reserved.
+            © 2025 CodeOfMemory. All rights reserved.
           </p>
         </div>
       </div>
