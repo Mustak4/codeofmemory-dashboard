@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,25 @@ const Contact = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+
+  const contactPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: "Contact CodeOfMemory",
+    description: "Get in touch with CodeOfMemory. We're here to help with questions about QR code memorial plaques and digital tribute pages.",
+    mainEntity: {
+      "@type": "Organization",
+      name: "CodeOfMemory",
+      legalName: "KKOSTOV LTD trading as CodeOfMemory",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "London",
+        addressCountry: "GB",
+      },
+      email: "hello@codeofmemory.com",
+      telephone: "+44-123-456-7890",
+    },
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +76,14 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
+      <SEO
+        title="Contact Us – CodeOfMemory"
+        description="Get in touch with CodeOfMemory. We're here to help with questions about QR code memorial plaques and digital tribute pages."
+        ogTitle="Contact Us – CodeOfMemory"
+        ogDescription="We're here to help. No question is too small. Contact CodeOfMemory for support with memorial plaques and digital tributes."
+        canonical="/contact"
+        structuredData={contactPageSchema}
+      />
       <Header />
 
       <main className="container mx-auto px-6 py-16">
@@ -80,14 +108,21 @@ const Contact = () => {
                   </Label>
                   <Input
                     id="name"
+                    name="name"
                     value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
                     placeholder="John Smith"
                     className="bg-background/50"
                     maxLength={100}
+                    required
+                    aria-required="true"
+                    aria-invalid={errors.name ? "true" : "false"}
+                    aria-describedby={errors.name ? "name-error" : undefined}
                   />
                   {errors.name && (
-                    <p className="text-sm text-destructive mt-1">{errors.name}</p>
+                    <p id="name-error" className="text-sm text-destructive mt-1" role="alert">
+                      {errors.name}
+                    </p>
                   )}
                 </div>
 
@@ -97,15 +132,22 @@ const Contact = () => {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
                     placeholder="john@example.com"
                     className="bg-background/50"
                     maxLength={255}
+                    required
+                    aria-required="true"
+                    aria-invalid={errors.email ? "true" : "false"}
+                    aria-describedby={errors.email ? "email-error" : undefined}
                   />
                   {errors.email && (
-                    <p className="text-sm text-destructive mt-1">{errors.email}</p>
+                    <p id="email-error" className="text-sm text-destructive mt-1" role="alert">
+                      {errors.email}
+                    </p>
                   )}
                 </div>
 
@@ -115,14 +157,21 @@ const Contact = () => {
                   </Label>
                   <Textarea
                     id="message"
+                    name="message"
                     value={formData.message}
                     onChange={(e) => handleChange("message", e.target.value)}
                     placeholder="How can we help you today?"
                     className="min-h-40 resize-none bg-background/50"
                     maxLength={1000}
+                    required
+                    aria-required="true"
+                    aria-invalid={errors.message ? "true" : "false"}
+                    aria-describedby={errors.message ? "message-error" : undefined}
                   />
                   {errors.message && (
-                    <p className="text-sm text-destructive mt-1">{errors.message}</p>
+                    <p id="message-error" className="text-sm text-destructive mt-1" role="alert">
+                      {errors.message}
+                    </p>
                   )}
                   <p className="text-sm text-muted-foreground mt-1">
                     {formData.message.length}/1000 characters
@@ -162,13 +211,13 @@ const Contact = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-earth mt-1" />
+                  <MapPin className="w-5 h-5 text-earth mt-1" aria-hidden="true" />
                   <div>
                     <p className="text-sm text-muted-foreground">Address</p>
-                    <p className="text-memory">
+                    <address className="text-memory not-italic">
                       KKOSTOV LTD<br />
                       London, United Kingdom
-                    </p>
+                    </address>
                   </div>
                 </div>
               </div>
@@ -177,14 +226,14 @@ const Contact = () => {
             <Card className="p-8 border-border/50 shadow-lg animate-fade-in bg-card/70 backdrop-blur-sm" style={{ animationDelay: "200ms" }}>
               <h3 className="text-xl font-serif mb-6 text-memory">Follow Us</h3>
               <div className="flex gap-4">
-                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300">
-                  <Facebook className="w-5 h-5" />
+                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300" aria-label="Visit our Facebook page">
+                  <Facebook className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300">
-                  <Instagram className="w-5 h-5" />
+                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300" aria-label="Visit our Instagram page">
+                  <Instagram className="w-5 h-5" aria-hidden="true" />
                 </a>
-                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300">
-                  <Twitter className="w-5 h-5" />
+                <a href="#" className="w-12 h-12 rounded-full bg-earth/20 flex items-center justify-center text-earth hover:bg-earth hover:text-warmth transition-all duration-300" aria-label="Visit our Twitter page">
+                  <Twitter className="w-5 h-5" aria-hidden="true" />
                 </a>
               </div>
             </Card>

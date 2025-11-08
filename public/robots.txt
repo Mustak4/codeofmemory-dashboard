@@ -12,3 +12,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Main sitemap (all languages with hreflang)
+Sitemap: https://codeofmemory.com/sitemap.xml
+
+# Sitemap index (language-specific sitemaps)
+Sitemap: https://codeofmemory.com/sitemap-index.xml

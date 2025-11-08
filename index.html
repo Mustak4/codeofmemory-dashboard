@@ -1,8 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    <link rel="preload" href="/logo.png" as="image" />
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    
+    <!-- Preconnect to improve font loading -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
     <title>CodeOfMemory - Forever Remembered</title>
     <meta name="description" content="Create lasting digital tributes for loved ones. Scan, remember, forever. Memorial plaques with QR codes linking to beautiful tribute pages." />
     <meta name="author" content="CodeOfMemory" />
@@ -10,15 +22,16 @@
     <meta property="og:title" content="CodeOfMemory - Forever Remembered" />
     <meta property="og:description" content="Create lasting digital tributes for loved ones. Every story deserves to be remembered." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta property="og:image" content="/logo.png" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@CodeOfMemory" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <meta name="twitter:image" content="/logo.png" />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Plausible Analytics will be initialized by PlausibleAnalytics component with locale tracking -->
   </body>
 </html>

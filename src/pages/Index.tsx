@@ -4,11 +4,33 @@ import { Heart, QrCode, Clock, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
+import { getLocalBusinessSchema } from "@/utils/schema";
+import { useLanguage } from "@/contexts/LanguageContext";
 import heroBackground from "@/assets/hero-background.jpg";
+import { useEffect } from "react";
 
 const Index = () => {
+  const { t } = useLanguage();
+  
+  // Preload hero image for better LCP
+  useEffect(() => {
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = heroBackground;
+    document.head.appendChild(link);
+  }, []);
+
+  const localBusinessSchema = getLocalBusinessSchema();
+
   return (
     <div className="min-h-screen">
+      <SEO
+        page="home"
+        canonical="/"
+        structuredData={localBusinessSchema}
+      />
       <Header />
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
@@ -16,6 +38,8 @@ const Index = () => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${heroBackground})` }}
+          role="img"
+          aria-label="Peaceful memorial setting with warm natural lighting"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/70 to-background"></div>
         </div>
@@ -23,17 +47,17 @@ const Index = () => {
         {/* Hero Content */}
         <div className="relative z-10 container mx-auto px-6 text-center animate-fade-in-slow">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif mb-8 text-permanence leading-tight">
-            Scan. Remember. Forever.
+            {t("home.heroTitle")}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed">
-            Every story deserves to be remembered. Create a lasting digital tribute for your loved ones.
+            {t("home.heroSubtitle")}
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button variant="hero" size="lg" asChild className="px-10 py-6">
-              <Link to="/create">Create a Memorial</Link>
+              <Link to="/create">{t("home.createMemorialButton")}</Link>
             </Button>
             <Button variant="outline" size="lg" className="px-10 py-6">
-              View Example
+              {t("home.viewExampleButton")}
             </Button>
           </div>
         </div>
@@ -43,50 +67,50 @@ const Index = () => {
       <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl md:text-5xl font-serif text-center mb-6 text-permanence">
-            How It Works
+            {t("home.howItWorksTitle")}
           </h2>
           <p className="text-lg text-muted-foreground text-center max-w-2xl mx-auto mb-16">
-            Three simple steps to create a meaningful, lasting tribute
+            {t("home.howItWorksSubtitle")}
           </p>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm">
-              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6">
-                <QrCode className="w-7 h-7 text-earth" />
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <QrCode className="w-7 h-7 text-earth" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-serif mb-3 text-memory">Create Your Page</h3>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("home.step1Title")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Build a beautiful memorial page with photos, stories, and memories
+                {t("home.step1Description")}
               </p>
             </Card>
 
             <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "100ms" }}>
-              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6">
-                <Heart className="w-7 h-7 text-earth" />
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Heart className="w-7 h-7 text-earth" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-serif mb-3 text-memory">Add Memories</h3>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("home.step2Title")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Invite family to share their stories and keep memories alive together
+                {t("home.step2Description")}
               </p>
             </Card>
 
             <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "200ms" }}>
-              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6">
-                <Shield className="w-7 h-7 text-earth" />
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Shield className="w-7 h-7 text-earth" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-serif mb-3 text-memory">Order Your Plaque</h3>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("home.step3Title")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Choose from beautiful memorial plaques with embedded QR codes
+                {t("home.step3Description")}
               </p>
             </Card>
 
             <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "300ms" }}>
-              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6">
-                <Clock className="w-7 h-7 text-earth" />
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Clock className="w-7 h-7 text-earth" aria-hidden="true" />
               </div>
-              <h3 className="text-xl font-serif mb-3 text-memory">Forever Accessible</h3>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("home.step4Title")}</h3>
               <p className="text-muted-foreground leading-relaxed">
-                A simple scan connects anyone to the full story, anytime, anywhere
+                {t("home.step4Description")}
               </p>
             </Card>
           </div>
@@ -98,14 +122,17 @@ const Index = () => {
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-serif mb-6 text-permanence">
-              Every Life Tells a Story
+              {t("home.ctaTitle")}
             </h2>
             <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-              Honor their memory with a tribute that lasts forever. No rush. Take your time.
+              {t("home.ctaSubtitle")}
             </p>
             <Button variant="hero" size="lg" asChild className="px-12 py-6">
-              <Link to="/create">Begin Your Tribute</Link>
+              <Link to="/order">{t("home.ctaButton")}</Link>
             </Button>
+            <p className="text-sm text-muted-foreground mt-6">
+              {t("common.learnMore")} <Link to="/about" className="text-earth hover:text-memory underline">{t("common.about")}</Link> {t("common.or")} {t("common.visit")} <Link to="/faq" className="text-earth hover:text-memory underline">{t("common.faq")}</Link> {t("common.forAnswers")}.
+            </p>
           </div>
         </div>
       </section>

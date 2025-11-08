@@ -1,7 +1,9 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import { Card } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const reviews = [
   {
@@ -61,8 +63,29 @@ const reviews = [
 ];
 
 const Reviews = () => {
+  const aggregateRatingSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: "QR Code Memorial Plaque",
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: "5.0",
+      reviewCount: "127",
+      bestRating: "5",
+      worstRating: "1",
+    },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
+      <SEO
+        title="Customer Reviews – CodeOfMemory"
+        description="Read stories from families who've trusted CodeOfMemory with their most precious memories. 5.0 out of 5 stars from 127 reviews."
+        ogTitle="Customer Reviews – CodeOfMemory"
+        ogDescription="5.0 out of 5 stars from 127 reviews. Read stories from families who've created lasting QR code memorial plaques."
+        canonical="/reviews"
+        structuredData={aggregateRatingSchema}
+      />
       <Header />
 
       <main className="container mx-auto px-6 py-16">
@@ -96,7 +119,7 @@ const Reviews = () => {
               className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm"
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <Quote className="w-8 h-8 text-earth/30 mb-4" />
+              <Quote className="w-8 h-8 text-earth/30 mb-4" aria-hidden="true" />
               
               <div className="flex gap-1 mb-4">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -129,19 +152,24 @@ const Reviews = () => {
               Join the families who trust us to preserve their most precious memories.
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
-              <a
-                href="/create"
+              <Link
+                to="/order"
                 className="inline-flex items-center justify-center px-8 py-3 bg-memory text-warmth hover:bg-memory/90 rounded-md font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Start Your Tribute
-              </a>
-              <a
-                href="/contact"
+              </Link>
+              <Link
+                to="/contact"
                 className="inline-flex items-center justify-center px-8 py-3 border border-border bg-background hover:bg-accent hover:text-accent-foreground rounded-md font-medium transition-all duration-300"
               >
                 Contact Us
-              </a>
+              </Link>
             </div>
+            <p className="text-sm text-muted-foreground mt-6">
+              <Link to="/faq#how-it-works" className="text-earth hover:text-memory underline">
+                Read how it works →
+              </Link>
+            </p>
           </Card>
         </div>
       </main>

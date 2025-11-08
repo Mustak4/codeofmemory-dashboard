@@ -1,0 +1,87 @@
+name: Weekly Maintenance
+
+on:
+  schedule:
+    # Run every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run SEO reports
+        run: npm run report:seo
+      
+      - name: Verify translations
+        run: npm run verify:translations
+        continue-on-error: true
+      
+      - name: Refresh SEO (sitemap generation)
+        run: npm run refresh:seo
+        continue-on-error: true
+      
+      - name: Fetch ads performance
+        run: npm run report:ads
+        env:
+          PLAUSIBLE_API_KEY: ${{ secrets.PLAUSIBLE_API_KEY }}
+        continue-on-error: true
+      
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      
+      - name: Commit updated reports
+        run: |
+          git add reports/*.md reports/*.json
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update weekly reports [skip ci]"
+            echo "Reports committed successfully"
+          else
+            echo "No changes to commit"
+          fi
+        continue-on-error: true
+      
+      - name: Push changes
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push origin HEAD:${{ github.ref_name }} || echo "Push failed or no changes"
+        continue-on-error: true
+      
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: maintenance-reports
+          path: |
+            reports/*.md
+            reports/*.json
+          retention-days: 30
+      
+      - name: Create summary
+        run: |
+          echo "## Maintenance Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Generated Reports" >> $GITHUB_STEP_SUMMARY
+          echo "- SEO_REPORT.md" >> $GITHUB_STEP_SUMMARY
+          echo "- OUTREACH_STATUS.md" >> $GITHUB_STEP_SUMMARY
+          echo "- LIGHTHOUSE_REPORT.md" >> $GITHUB_STEP_SUMMARY
+          echo "- ADS_PERFORMANCE.md" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Reports are available in the workflow artifacts." >> $GITHUB_STEP_SUMMARY
+

@@ -37,12 +37,12 @@
 
     --radius: 0.75rem;
 
-    /* Custom semantic tokens */
-    --warmth: 36 33% 96%;
-    --comfort: 36 33% 83%;
-    --earth: 36 33% 60%;
-    --memory: 36 33% 34%;
-    --permanence: 36 33% 15%;
+    /* Custom semantic tokens - Updated color palette */
+    --warmth: 36 33% 96%; /* #F9F6F2 - background */
+    --comfort: 36 33% 83%; /* #E3D5C5 - neutral section */
+    --earth: 36 33% 61%; /* #BF9978 - accent */
+    --memory: 36 33% 28%; /* #5B3E33 - text */
+    --permanence: 36 33% 15%; /* #301F1A - dark */
 
     --sidebar-background: 36 33% 98%;
     --sidebar-foreground: 36 33% 29%;
@@ -105,9 +105,18 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
+    /* Optimize font rendering */
+    font-display: swap;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {

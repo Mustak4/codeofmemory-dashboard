@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 import {
   Accordion,
   AccordionContent,
@@ -7,116 +8,164 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Card } from "@/components/ui/card";
-
-const faqs = [
-  {
-    category: "Getting Started",
-    questions: [
-      {
-        q: "How do I create a memorial page?",
-        a: "Simply click 'Create Memorial' and follow our gentle, step-by-step guide. You'll add basic information, upload photos, and write or paste a biography. The entire process takes about 15-20 minutes, but you can save and return anytime.",
-      },
-      {
-        q: "Can I create a memorial before someone passes?",
-        a: "Absolutely. Many families find it healing to create a 'living memorial' where the person can share their own story, choose their photos, and record their memories while they're still with us.",
-      },
-      {
-        q: "Do I need to be tech-savvy?",
-        a: "Not at all. We've designed CodeOfMemory to be simple and intuitive. If you can send an email, you can create a beautiful memorial.",
-      },
-    ],
-  },
-  {
-    category: "QR Codes & Plaques",
-    questions: [
-      {
-        q: "How do QR codes work?",
-        a: "Each memorial plaque includes a unique QR code. When someone scans it with their smartphone camera, they're instantly directed to the memorial page. No app needed—it works with any modern smartphone.",
-      },
-      {
-        q: "What plaque materials are available?",
-        a: "We offer brushed stainless steel, bronze, brass, and black granite plaques. Each is weather-resistant and built to last decades. The QR codes are laser-engraved for permanence.",
-      },
-      {
-        q: "How long does delivery take?",
-        a: "UK orders typically arrive within 7-10 business days. International orders take 14-21 days. Each plaque is handcrafted with care—we never rush quality.",
-      },
-      {
-        q: "Can I update the memorial page after receiving the plaque?",
-        a: "Yes! The QR code always points to your memorial page. You can add photos, stories, and memories anytime—the code never changes.",
-      },
-    ],
-  },
-  {
-    category: "Privacy & Security",
-    questions: [
-      {
-        q: "Who can see the memorial page?",
-        a: "You control visibility. Pages can be fully public, password-protected, or private (invitation-only). You can change these settings anytime.",
-      },
-      {
-        q: "What happens to my data?",
-        a: "Your memorial data is stored securely and encrypted. We never sell or share your information. Memorial pages are preserved permanently—they won't disappear if you stop paying.",
-      },
-      {
-        q: "Can I delete a memorial?",
-        a: "Yes, you have full control. You can delete or archive a memorial at any time from your account settings.",
-      },
-    ],
-  },
-  {
-    category: "Pricing & Orders",
-    questions: [
-      {
-        q: "How much does a memorial plaque cost?",
-        a: "Plaques start at £79 for stainless steel and £129 for bronze. This includes the memorial page setup, QR code, and lifetime hosting. No subscription fees.",
-      },
-      {
-        q: "Is there a monthly fee?",
-        a: "No. Once you order a plaque, your memorial page is hosted forever at no additional cost. Optional premium features (like custom domains) are available but never required.",
-      },
-      {
-        q: "Can I order just a digital memorial without a plaque?",
-        a: "Yes. Digital-only memorials are free to create. You'll get a shareable link instead of a QR code plaque.",
-      },
-    ],
-  },
-  {
-    category: "Adding Memories",
-    questions: [
-      {
-        q: "Can family and friends add to the memorial?",
-        a: "Yes! You can invite others to contribute photos and memories. You approve each addition before it appears on the page.",
-      },
-      {
-        q: "Is there a limit to how many photos I can add?",
-        a: "No photo limits. Add as many as you'd like—your memorial grows over time.",
-      },
-      {
-        q: "Can I include videos?",
-        a: "Yes. You can embed videos from YouTube, Vimeo, or upload directly (premium feature).",
-      },
-    ],
-  },
-];
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const FAQ = () => {
+  const { t } = useLanguage();
+
+  const faqPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: t("faq.questionCreatePage"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerCreatePage") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionBeforePasses"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerBeforePasses") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionTechSavvy"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerTechSavvy") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionQRWork"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerQRWork") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionMaterials"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerMaterials") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionDelivery"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerDelivery") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionUpdatePage"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerUpdatePage") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionWhoCanSee"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerWhoCanSee") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionData"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerData") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionDelete"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerDelete") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionCost"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerCost") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionMonthlyFee"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerMonthlyFee") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionDigitalOnly"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerDigitalOnly") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionFamilyAdd"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerFamilyAdd") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionPhotoLimit"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerPhotoLimit") },
+      },
+      {
+        "@type": "Question",
+        name: t("faq.questionVideos"),
+        acceptedAnswer: { "@type": "Answer", text: t("faq.answerVideos") },
+      },
+    ],
+  };
+
+  const faqSections = [
+    {
+      category: t("faq.categoryGettingStarted"),
+      questions: [
+        { q: t("faq.questionCreatePage"), a: t("faq.answerCreatePage") },
+        { q: t("faq.questionBeforePasses"), a: t("faq.answerBeforePasses") },
+        { q: t("faq.questionTechSavvy"), a: t("faq.answerTechSavvy") },
+      ],
+    },
+    {
+      category: t("faq.categoryQRCodes"),
+      questions: [
+        { q: t("faq.questionQRWork"), a: t("faq.answerQRWork") },
+        { q: t("faq.questionMaterials"), a: t("faq.answerMaterials") },
+        { q: t("faq.questionDelivery"), a: t("faq.answerDelivery") },
+        { q: t("faq.questionUpdatePage"), a: t("faq.answerUpdatePage") },
+      ],
+    },
+    {
+      category: t("faq.categoryPrivacy"),
+      questions: [
+        { q: t("faq.questionWhoCanSee"), a: t("faq.answerWhoCanSee") },
+        { q: t("faq.questionData"), a: t("faq.answerData") },
+        { q: t("faq.questionDelete"), a: t("faq.answerDelete") },
+      ],
+    },
+    {
+      category: t("faq.categoryPricing"),
+      questions: [
+        { q: t("faq.questionCost"), a: t("faq.answerCost") },
+        { q: t("faq.questionMonthlyFee"), a: t("faq.answerMonthlyFee") },
+        { q: t("faq.questionDigitalOnly"), a: t("faq.answerDigitalOnly") },
+      ],
+    },
+    {
+      category: t("faq.categoryMemories"),
+      questions: [
+        { q: t("faq.questionFamilyAdd"), a: t("faq.answerFamilyAdd") },
+        { q: t("faq.questionPhotoLimit"), a: t("faq.answerPhotoLimit") },
+        { q: t("faq.questionVideos"), a: t("faq.answerVideos") },
+      ],
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
+      <SEO
+        page="faq"
+        canonical="/faq"
+        structuredData={faqPageSchema}
+      />
       <Header />
 
       <main className="container mx-auto px-6 py-16">
         <div className="max-w-3xl mx-auto text-center mb-12 animate-fade-in-slow">
           <h1 className="text-5xl md:text-6xl font-serif mb-6 text-permanence leading-tight">
-            Frequently Asked Questions
+            {t("faq.title")}
           </h1>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            Everything you need to know about creating lasting memorials.
+            {t("faq.subtitle")}
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto space-y-8">
-          {faqs.map((section, index) => (
+          {faqSections.map((section, index) => (
             <Card
               key={section.category}
               className="p-8 border-border/50 shadow-lg animate-fade-in bg-card/70 backdrop-blur-sm"
@@ -142,16 +191,16 @@ const FAQ = () => {
         {/* Still Have Questions CTA */}
         <div className="max-w-2xl mx-auto mt-16">
           <Card className="p-10 border-border/50 shadow-lg text-center bg-card/70 backdrop-blur-sm">
-            <h2 className="text-3xl font-serif mb-4 text-memory">Still Have Questions?</h2>
+            <h2 className="text-3xl font-serif mb-4 text-memory">{t("faq.stillHaveQuestions")}</h2>
             <p className="text-muted-foreground mb-6">
-              We're here to help. Reach out anytime—no question is too small.
+              {t("faq.stillHaveQuestionsText")}
             </p>
-            <a
-              href="/contact"
+            <Link
+              to="/contact"
               className="inline-flex items-center justify-center px-8 py-3 bg-memory text-warmth hover:bg-memory/90 rounded-md font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
             >
-              Contact Us
-            </a>
+              {t("common.contactUs")}
+            </Link>
           </Card>
         </div>
       </main>

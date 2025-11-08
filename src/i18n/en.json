@@ -1,0 +1,286 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "order": "Order",
+    "reviews": "Reviews",
+    "faq": "FAQ",
+    "blog": "Blog",
+    "contact": "Contact",
+    "createMemorial": "Create Memorial",
+    "beginTribute": "Begin Your Tribute",
+    "learnMore": "Learn more",
+    "readMore": "Read more",
+    "contactUs": "Contact Us",
+    "getInTouch": "Get in Touch",
+    "or": "or",
+    "visit": "visit our",
+    "forAnswers": "for answers"
+  },
+  "home": {
+    "heroTitle": "Scan. Remember. Forever.",
+    "heroSubtitle": "Every story deserves to be remembered. Create a lasting digital tribute for your loved ones.",
+    "createMemorialButton": "Create a Memorial",
+    "viewExampleButton": "View Example",
+    "howItWorksTitle": "How It Works",
+    "howItWorksSubtitle": "Three simple steps to create a meaningful, lasting tribute",
+    "step1Title": "Create Your Page",
+    "step1Description": "Build a beautiful digital memorial page with photos, stories, and memories. Our simple process guides you step-by-step to create a lasting tribute.",
+    "step2Title": "Add Memories",
+    "step2Description": "Invite family and friends to share their stories and keep memories alive together. Your memorial page grows over time as loved ones contribute.",
+    "step3Title": "Order Your Plaque",
+    "step3Description": "Choose from beautiful, weather-resistant memorial plaques with laser-engraved QR codes. Available in stainless steel, bronze, brass, and granite.",
+    "step4Title": "Forever Accessible",
+    "step4Description": "A simple scan with any smartphone connects visitors to the full story, anytime, anywhere. No app required—just point and scan.",
+    "ctaTitle": "Every Life Tells a Story",
+    "ctaSubtitle": "Honor their memory with a tribute that lasts forever. No rush. Take your time.",
+    "ctaButton": "Begin Your Tribute",
+    "ctaLinks": "Learn more {{aboutLink}} or visit our {{faqLink}} for answers."
+  },
+  "about": {
+    "title": "Our Mission",
+    "subtitle": "To preserve the stories that matter most through technology that feels human.",
+    "whyWeStartedTitle": "Why We Started",
+    "whyWeStartedText1": "CodeOfMemory was born from a simple moment: standing at a memorial, reading a name and two dates, and wishing we could know more about the person behind those numbers.",
+    "whyWeStartedText2": "We realized that while physical memorials preserve where someone rests, they rarely capture who they were. The laughter they shared, the wisdom they offered, the small moments that made them unforgettable.",
+    "whyWeStartedText3": "Technology gave us the answer. A simple QR code could bridge the physical and digital, connecting a memorial plaque to a living, breathing collection of memories. Stories that can be added to over time. Photos that bring smiles. Words that keep their spirit alive.",
+    "whyWeStartedText4": "Every life tells a story. We're here to make sure those stories are never forgotten.",
+    "valuesTitle": "Our Values",
+    "valueRespectTitle": "Respect",
+    "valueRespectDescription": "Every memorial is treated with dignity and care. This isn't just technology—it's sacred.",
+    "valueConnectionTitle": "Connection",
+    "valueConnectionDescription": "We help families stay connected across time and distance through shared memories.",
+    "valuePrivacyTitle": "Privacy",
+    "valuePrivacyDescription": "Your memories are protected. You control who sees what, always.",
+    "valuePermanenceTitle": "Permanence",
+    "valuePermanenceDescription": "Built to last forever. These memories aren't temporary—they're your legacy.",
+    "howWeHelpTitle": "How We Help Families",
+    "beforeLossTitle": "Before Loss",
+    "beforeLossDescription": "Help loved ones create their own tribute while they can share their story in their own words.",
+    "afterLossTitle": "After Loss",
+    "afterLossDescription": "Give families a gentle, guided way to celebrate a life and keep memories accessible forever.",
+    "overTimeTitle": "Over Time",
+    "overTimeDescription": "Memorial pages grow as family and friends add new memories, keeping the connection alive for generations."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about creating lasting memorials.",
+    "categoryGettingStarted": "Getting Started",
+    "categoryQRCodes": "QR Codes & Plaques",
+    "categoryPrivacy": "Privacy & Security",
+    "categoryPricing": "Pricing & Orders",
+    "categoryMemories": "Adding Memories",
+    "questionCreatePage": "How do I create a memorial page?",
+    "answerCreatePage": "Simply click 'Create Memorial' and follow our gentle, step-by-step guide. You'll add basic information, upload photos, and write or paste a biography. The entire process takes about 15-20 minutes, but you can save and return anytime.",
+    "questionBeforePasses": "Can I create a memorial before someone passes?",
+    "answerBeforePasses": "Absolutely. Many families find it healing to create a 'living memorial' where the person can share their own story, choose their photos, and record their memories while they're still with us.",
+    "questionTechSavvy": "Do I need to be tech-savvy?",
+    "answerTechSavvy": "Not at all. We've designed CodeOfMemory to be simple and intuitive. If you can send an email, you can create a beautiful memorial.",
+    "questionQRWork": "How do QR codes work on memorial plaques?",
+    "answerQRWork": "Each QR code memorial plaque includes a unique, laser-engraved QR code. When someone scans it with their smartphone camera (no app needed), they're instantly directed to the digital memorial page. The QR code never changes, so you can update the memorial page anytime while the plaque remains the same.",
+    "questionMaterials": "What memorial plaque materials are available?",
+    "answerMaterials": "We offer beautiful, weather-resistant memorial plaques in brushed stainless steel, bronze, brass, and black granite. Each plaque is built to last decades outdoors. The QR codes are laser-engraved directly into the material for permanent durability, ensuring your digital tribute page remains accessible for generations.",
+    "questionDelivery": "How long does delivery take?",
+    "answerDelivery": "UK orders typically arrive within 7-10 business days. International orders take 14-21 days. Each plaque is handcrafted with care—we never rush quality.",
+    "questionUpdatePage": "Can I update the memorial page after receiving the plaque?",
+    "answerUpdatePage": "Yes! The QR code always points to your memorial page. You can add photos, stories, and memories anytime—the code never changes.",
+    "questionWhoCanSee": "Who can see the memorial page?",
+    "answerWhoCanSee": "You control visibility. Pages can be fully public, password-protected, or private (invitation-only). You can change these settings anytime.",
+    "questionData": "What happens to my data?",
+    "answerData": "Your memorial data is stored securely and encrypted. We never sell or share your information. Memorial pages are preserved permanently—they won't disappear if you stop paying.",
+    "questionDelete": "Can I delete a memorial?",
+    "answerDelete": "Yes, you have full control. You can delete or archive a memorial at any time from your account settings.",
+    "questionCost": "How much does a memorial plaque cost?",
+    "answerCost": "Plaques start at £79 for stainless steel and £129 for bronze. This includes the memorial page setup, QR code, and lifetime hosting. No subscription fees.",
+    "questionMonthlyFee": "Is there a monthly fee?",
+    "answerMonthlyFee": "No. Once you order a plaque, your memorial page is hosted forever at no additional cost. Optional premium features (like custom domains) are available but never required.",
+    "questionDigitalOnly": "Can I order just a digital memorial without a plaque?",
+    "answerDigitalOnly": "Yes. Digital-only memorials are free to create. You'll get a shareable link instead of a QR code plaque.",
+    "questionFamilyAdd": "Can family and friends add to the memorial?",
+    "answerFamilyAdd": "Yes! You can invite others to contribute photos and memories. You approve each addition before it appears on the page.",
+    "questionPhotoLimit": "Is there a limit to how many photos I can add?",
+    "answerPhotoLimit": "No photo limits. Add as many as you'd like—your memorial grows over time.",
+    "questionVideos": "Can I include videos?",
+    "answerVideos": "Yes. You can embed videos from YouTube, Vimeo, or upload directly (premium feature).",
+    "stillHaveQuestions": "Still Have Questions?",
+    "stillHaveQuestionsText": "We're here to help. Reach out anytime—no question is too small."
+  },
+  "order": {
+    "title": "Order Your Memorial Plaque",
+    "subtitle": "Choose a plaque that honors your loved one's memory",
+    "step1Title": "Select Material",
+    "step2Title": "Personalize",
+    "step3Title": "Review",
+    "step4Title": "Complete",
+    "steelName": "Brushed Stainless Steel",
+    "steelDescription": "Modern, weather-resistant finish",
+    "bronzeName": "Bronze",
+    "bronzeDescription": "Classic, timeless elegance",
+    "brassName": "Brass",
+    "brassDescription": "Warm, traditional look",
+    "graniteName": "Black Granite",
+    "graniteDescription": "Premium stone with engraving",
+    "price": "Price",
+    "continue": "Continue",
+    "back": "Back",
+    "completeOrder": "Complete Order"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We're here to help. No question is too small.",
+    "formTitle": "Send Us a Message",
+    "nameLabel": "Your Name",
+    "emailLabel": "Email Address",
+    "messageLabel": "Your Message",
+    "sendButton": "Send Message",
+    "contactDetailsTitle": "Contact Details",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "followUsTitle": "Follow Us",
+    "responseTime": "We typically respond within 24 hours during business days. For urgent matters, please call us directly."
+  },
+  "blog": {
+    "title": "Stories & Insights",
+    "subtitle": "Thoughts on remembrance, family, and the art of honoring lives well-lived.",
+    "featured": "Featured",
+    "readMore": "Read More",
+    "allPosts": "All Posts",
+    "noPosts": "No posts found.",
+    "learnMoreAbout": "Learn more",
+    "startTribute": "start your tribute",
+    "aboutMission": "about our mission",
+    "latestPost": "Latest Post",
+    "readArticle": "Read Article",
+    "backToBlog": "Back to Blog",
+    "by": "By",
+    "tags": "Tags",
+    "aboutAuthor": "About the Author",
+    "relatedArticles": "Related Articles",
+    "stayConnected": "Stay Connected",
+    "newsletterText": "Receive thoughtful articles about remembrance, family, and honoring loved ones.",
+    "subscribe": "Subscribe",
+    "noSpam": "No spam, ever. Unsubscribe anytime.",
+    "categories": {
+      "remembrance": "Remembrance",
+      "planning": "Planning",
+      "innovation": "Innovation",
+      "stories": "Stories",
+      "writing": "Writing",
+      "design": "Design",
+      "guidance": "Guidance"
+    },
+    "posts": {
+      "digital-memorials-modern-grief": {
+        "title": "The Power of Digital Memorials in Modern Grief",
+        "excerpt": "How technology is changing the way we remember and honor loved ones. Exploring the intersection of tradition and innovation in memorial practices.",
+        "category": "remembrance"
+      },
+      "living-memorial-pre-planning": {
+        "title": "Creating a Living Memorial: Why Pre-Planning Matters",
+        "excerpt": "The healing power of involving loved ones in creating their own tribute. How families are finding peace through proactive memorial planning.",
+        "category": "planning"
+      },
+      "qr-codes-memorials-guide": {
+        "title": "QR Codes on Memorials: A Technical and Emotional Guide",
+        "excerpt": "Understanding how QR technology preserves memories for generations. The practical and emotional benefits of linking physical memorials to digital stories.",
+        "category": "innovation"
+      },
+      "families-keeping-memories-alive": {
+        "title": "How Families Are Keeping Memories Alive Together",
+        "excerpt": "Real stories from families using collaborative memorial pages. The unexpected joy of gathering digitally to share stories and photos.",
+        "category": "stories"
+      },
+      "writing-meaningful-biography": {
+        "title": "The Art of Writing a Meaningful Biography",
+        "excerpt": "Gentle guidance for capturing a life in words. Tips and prompts for honoring someone's story with authenticity and love.",
+        "category": "writing"
+      },
+      "memorial-design-trends": {
+        "title": "Memorial Design Trends: Balancing Tradition and Innovation",
+        "excerpt": "How modern memorial plaques honor the past while embracing the future. Exploring materials, styles, and technologies that respect tradition.",
+        "category": "design"
+      },
+      "why-qr-memorial-plaques-change-remembrance": {
+        "title": "Why QR Memorial Plaques Are Changing How We Remember",
+        "excerpt": "Discover how QR code memorial plaques are revolutionizing remembrance, making memories accessible to future generations while honoring traditional memorial practices.",
+        "category": "innovation"
+      },
+      "how-to-create-digital-memorial-page": {
+        "title": "How to Create a Meaningful Digital Memorial Page",
+        "excerpt": "A step-by-step guide to creating a beautiful, comprehensive digital memorial page that honors your loved one's life and preserves their memory for future generations.",
+        "category": "guidance"
+      },
+      "best-materials-for-outdoor-qr-plaques": {
+        "title": "Best Materials for Outdoor QR Memorial Plaques",
+        "excerpt": "A comprehensive guide to choosing the right material for your outdoor QR code memorial plaque, ensuring durability, readability, and lasting beauty.",
+        "category": "guidance"
+      }
+    }
+  },
+  "reviews": {
+    "title": "Customer Reviews",
+    "subtitle": "Stories from families who've trusted CodeOfMemory with their most precious memories.",
+    "rating": "Rating",
+    "readHowItWorks": "Read how it works",
+    "averageRating": "Average Rating",
+    "totalReviews": "Total Reviews",
+    "inMemoryOf": "In memory of"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "subtitle": "The page you're looking for doesn't exist.",
+    "goHome": "Go Home"
+  },
+  "seo": {
+    "home": {
+      "title": "QR Code Memorial Plaques – CodeOfMemory",
+      "description": "Create a personalized metal plaque with a QR code linking to a digital memorial page for your loved one.",
+      "ogTitle": "QR Code Memorial Plaques – CodeOfMemory",
+      "ogDescription": "Create a personalized metal plaque with a QR code linking to a digital memorial page for your loved one."
+    },
+    "about": {
+      "title": "Our Mission – CodeOfMemory",
+      "description": "Learn about CodeOfMemory's mission to preserve stories through QR code memorial plaques and digital tribute pages.",
+      "ogTitle": "Our Mission – CodeOfMemory",
+      "ogDescription": "Preserving memories with dignity through technology and love. Learn how we help families create lasting digital tributes."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions – CodeOfMemory",
+      "description": "Everything you need to know about QR code memorial plaques, digital tribute pages, and creating lasting memorials for your loved ones.",
+      "ogTitle": "Frequently Asked Questions – CodeOfMemory",
+      "ogDescription": "Learn about QR code memorials, memorial plaques, and digital tribute pages. Get answers to common questions about creating lasting tributes."
+    },
+    "order": {
+      "title": "Order Your Memorial Plaque – CodeOfMemory",
+      "description": "Order a personalized QR code memorial plaque. Choose from stainless steel, bronze, brass, or granite. Includes lifetime hosting.",
+      "ogTitle": "Order Your Memorial Plaque – CodeOfMemory",
+      "ogDescription": "Choose a plaque that honors your loved one's memory. Available in multiple materials with laser-engraved QR codes."
+    },
+    "contact": {
+      "title": "Contact Us – CodeOfMemory",
+      "description": "Get in touch with CodeOfMemory. We're here to help with questions about QR code memorial plaques and digital tribute pages.",
+      "ogTitle": "Contact Us – CodeOfMemory",
+      "ogDescription": "We're here to help. No question is too small. Contact CodeOfMemory for support with memorial plaques and digital tributes."
+    },
+    "reviews": {
+      "title": "Customer Reviews – CodeOfMemory",
+      "description": "Read stories from families who've trusted CodeOfMemory with their most precious memories. 5.0 out of 5 stars from 127 reviews.",
+      "ogTitle": "Customer Reviews – CodeOfMemory",
+      "ogDescription": "5.0 out of 5 stars from 127 reviews. Read stories from families who've created lasting QR code memorial plaques."
+    },
+    "blog": {
+      "title": "Stories & Insights – Remembering Through Technology",
+      "description": "Thoughtful articles about remembrance, family, and the art of honoring lives well-lived through QR code memorials and digital tribute pages.",
+      "ogTitle": "Stories & Insights – Remembering Through Technology",
+      "ogDescription": "Thoughtful articles about remembrance, family, and honoring loved ones through technology."
+    },
+    "notFound": {
+      "title": "Page Not Found – CodeOfMemory",
+      "description": "The page you're looking for doesn't exist.",
+      "ogTitle": "Page Not Found – CodeOfMemory",
+      "ogDescription": "The page you're looking for doesn't exist."
+    }
+  }
+}
+

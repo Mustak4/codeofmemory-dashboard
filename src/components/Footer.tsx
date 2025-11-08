@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Heart, Mail, Facebook, Instagram, Twitter } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -8,9 +8,16 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <Heart className="w-5 h-5 text-earth" />
-              <span className="text-lg font-serif text-memory">CodeOfMemory</span>
+            <Link to="/" className="flex items-center mb-4 group">
+              <img 
+                src="/logo.png" 
+                alt="CodeOfMemory" 
+                className="h-10 w-auto" 
+                width="40"
+                height="40"
+                loading="lazy"
+                decoding="async"
+              />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Preserving memories with dignity through technology and love.
@@ -75,20 +82,35 @@ const Footer = () => {
           <div>
             <h3 className="font-serif text-memory mb-4">Get in Touch</h3>
             <ul className="space-y-2 mb-4">
-              <li className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4" />
-                hello@codeofmemory.com
+              <li className="flex items-start gap-2 text-sm">
+                <Mail className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <a href="mailto:hello@codeofmemory.com" className="text-muted-foreground hover:text-memory transition-colors">
+                  hello@codeofmemory.com
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-sm">
+                <Phone className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <a href="tel:+441234567890" className="text-muted-foreground hover:text-memory transition-colors">
+                  +44 123 456 7890
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-sm">
+                <MapPin className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <address className="text-muted-foreground not-italic">
+                  KKOSTOV LTD<br />
+                  London, United Kingdom
+                </address>
               </li>
             </ul>
             <div className="flex gap-3">
-              <a href="#" className="text-muted-foreground hover:text-earth transition-colors">
-                <Facebook className="w-5 h-5" />
+              <a href="#" className="text-muted-foreground hover:text-earth transition-colors" aria-label="Visit our Facebook page">
+                <Facebook className="w-5 h-5" aria-hidden="true" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-earth transition-colors">
-                <Instagram className="w-5 h-5" />
+              <a href="#" className="text-muted-foreground hover:text-earth transition-colors" aria-label="Visit our Instagram page">
+                <Instagram className="w-5 h-5" aria-hidden="true" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-earth transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="#" className="text-muted-foreground hover:text-earth transition-colors" aria-label="Visit our Twitter page">
+                <Twitter className="w-5 h-5" aria-hidden="true" />
               </a>
             </div>
           </div>
