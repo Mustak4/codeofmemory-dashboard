@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import { Mail, Phone, Facebook, Instagram, Twitter } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -28,11 +28,6 @@ const Footer = () => {
           <div>
             <h3 className="font-serif text-memory mb-4">Company</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/about" className="text-sm text-muted-foreground hover:text-memory transition-colors">
-                  About Us
-                </Link>
-              </li>
               <li>
                 <Link to="/reviews" className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Reviews
@@ -90,12 +85,9 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 text-sm">
                 <Phone className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
-                <a href="tel:+441234567890" className="text-muted-foreground hover:text-memory transition-colors">
-                  +44 123 456 7890
+                <a href="tel:+447741453154" className="text-muted-foreground hover:text-memory transition-colors">
+                  07741453154
                 </a>
-              </li>
-              <li className="flex items-start gap-2 text-sm">
-                <MapPin className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
               </li>
             </ul>
             <div className="flex gap-3">

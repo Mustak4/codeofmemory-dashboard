@@ -156,3 +156,104 @@
     background-color: hsl(var(--permanence));
   }
 }
+
+/* Enhanced blog post typography */
+.prose p {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Visual breaks between sections */
+.prose h2 {
+  position: relative;
+}
+
+.prose h2::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(to right, hsl(var(--earth)), transparent);
+  margin-bottom: 1.5rem;
+  border-radius: 2px;
+}
+
+/* Better list styling */
+.prose ul,
+.prose ol {
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Enhanced link styling */
+.prose a {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.prose a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Better emphasis */
+.prose strong {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Improved blockquote styling */
+.prose blockquote {
+  position: relative;
+  font-style: normal;
+}
+
+.prose blockquote::before {
+  content: '"';
+  position: absolute;
+  left: -0.5rem;
+  top: -0.5rem;
+  font-size: 4rem;
+  line-height: 1;
+  color: hsl(var(--earth));
+  opacity: 0.2;
+  font-family: Georgia, serif;
+}
+
+/* Print styles for blog posts */
+@media print {
+  header,
+  footer,
+  aside,
+  nav[aria-label="Breadcrumb"],
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  article {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .prose {
+    max-width: 100% !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  a {
+    color: black !important;
+    text-decoration: underline !important;
+  }
+
+  .prose a {
+    color: black !important;
+  }
+}

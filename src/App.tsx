@@ -10,7 +10,6 @@ import { languages } from "@/i18n/config";
 import Index from "./pages/Index";
 import Memorial from "./pages/Memorial";
 import CreateTribute from "./pages/CreateTribute";
-import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Reviews from "./pages/Reviews";
 import FAQ from "./pages/FAQ";
@@ -57,7 +56,6 @@ const App = () => (
           <ScrollToTop />
           <Routes>
             {createLocalizedRoute("/", <Index />)}
-            {createLocalizedRoute("/about", <About />)}
             {createLocalizedRoute("/contact", <Contact />)}
             {createLocalizedRoute("/reviews", <Reviews />)}
             {createLocalizedRoute("/faq", <FAQ />)}

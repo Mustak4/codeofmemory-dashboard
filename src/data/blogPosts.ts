@@ -39,11 +39,12 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>As we continue to navigate how technology can serve our deepest human needs, QR code memorials represent a thoughtful, respectful approach to preserving memories. They honor tradition while embracing innovation, creating new possibilities for how we remember and honor those we've lost.</p>
 
-<p>If you're considering creating a memorial for a loved one, <a href="/order">explore our memorial plaque options</a> or <a href="/about">learn more about our mission</a> to preserve memories with dignity and care.</p>`,
+<p>If you're considering creating a memorial for a loved one, <a href="/order">explore our memorial plaque options</a> or <a href="/">learn more about our mission</a> to preserve memories with dignity and care.</p>`,
     date: "2025-01-15",
     readTime: "5 min read",
     category: "Remembrance",
     slug: "digital-memorials-modern-grief",
+    image: "/blog-images/thepowerofdigitalmemorials.png",
     author: {
       name: "CodeOfMemory Team",
       bio: "The CodeOfMemory team is dedicated to helping families preserve memories with dignity and care through thoughtful technology."
@@ -96,13 +97,14 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>While living memorials are still relatively new, they're becoming increasingly popular as people recognize their benefits. More families are choosing this approach, finding that it provides both practical advantages and emotional healing.</p>
 
-<p>If you're interested in creating a living memorial for yourself or a loved one, <a href="/about">learn more about our approach</a> to memorialization. We're here to guide you through the process with care and respect, helping you create a tribute that honors a life well-lived.</p>
+<p>If you're interested in creating a living memorial for yourself or a loved one, <a href="/">learn more about our approach</a> to memorialization. We're here to guide you through the process with care and respect, helping you create a tribute that honors a life well-lived.</p>
 
 <p>Remember, creating a memorial isn't about dwelling on loss—it's about celebrating life, preserving memories, and ensuring that important stories are never forgotten. Whether created before or after someone passes away, memorials serve as lasting tributes to the people who matter most.</p>`,
     date: "2025-01-08",
     readTime: "7 min read",
     category: "Planning",
     slug: "living-memorial-pre-planning",
+    image: "/blog-images/CreatingaLivingMemorial.png",
     author: {
       name: "CodeOfMemory Team",
       bio: "The CodeOfMemory team is dedicated to helping families preserve memories with dignity and care through thoughtful technology."
@@ -165,13 +167,14 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>The plaque can be placed in a meaningful location—perhaps at a gravesite, in a memorial garden, or in a family home. Anyone who visits can scan the code with their smartphone to access the digital memorial, creating a seamless connection between the physical and digital tribute.</p>
 
-<p>To learn more about how QR code memorials work and how they can help preserve memories, <a href="/about">visit our about page</a> or explore our <a href="https://en.wikipedia.org/wiki/QR_code" target="_blank" rel="noopener noreferrer">understanding of QR code technology</a>.</p>
+<p>To learn more about how QR code memorials work and how they can help preserve memories, <a href="/">visit our about page</a> or explore our <a href="https://en.wikipedia.org/wiki/QR_code" target="_blank" rel="noopener noreferrer">understanding of QR code technology</a>.</p>
 
 <p>QR code memorials represent a thoughtful evolution in how we remember and honor those we've lost. By combining the permanence of physical memorials with the richness of digital content, they create lasting tributes that serve families for generations to come.</p>`,
     date: "2024-12-20",
     readTime: "6 min read",
     category: "Innovation",
     slug: "qr-codes-memorials-guide",
+    image: "/blog-images/QRCodesonMemorials.png",
     author: {
       name: "CodeOfMemory Team",
       bio: "The CodeOfMemory team is dedicated to helping families preserve memories with dignity and care through thoughtful technology."
@@ -222,13 +225,14 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>Consider setting aside time for family members to contribute together, perhaps during a virtual gathering or memorial service. This shared experience can be meaningful and healing, bringing families together around memory and remembrance.</p>
 
-<p>To learn more about creating collaborative digital memorials, <a href="/about">explore our approach</a> to memorialization. We're here to help you create a meaningful space where your family can come together to remember and honor your loved one.</p>
+<p>To learn more about creating collaborative digital memorials, <a href="/">explore our approach</a> to memorialization. We're here to help you create a meaningful space where your family can come together to remember and honor your loved one.</p>
 
 <p>Remember, collaborative memorials are about more than preserving memories—they're about maintaining connections, sharing stories, and ensuring that important family history is never lost. In a world where families are often separated by distance, these digital spaces provide a way to come together around what matters most.</p>`,
     date: "2024-12-12",
     readTime: "8 min read",
     category: "Stories",
     slug: "families-keeping-memories-alive",
+    image: "/blog-images/HowFamiliesAre.png",
     author: {
       name: "CodeOfMemory Team",
       bio: "The CodeOfMemory team is dedicated to helping families preserve memories with dignity and care through thoughtful technology."
@@ -291,7 +295,7 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>Remember, there's no right or wrong way to write a memorial biography. What matters is that it authentically reflects the person's life and provides a meaningful way for family and friends to remember and honor them. Take your time, be gentle with yourself, and create something that feels right.</p>
 
-<p>If you need guidance or support in creating a memorial biography, <a href="/about">learn more about our approach</a> to memorialization. We're here to help you honor your loved one's story with care and authenticity.</p>
+<p>If you need guidance or support in creating a memorial biography, <a href="/">learn more about our approach</a> to memorialization. We're here to help you honor your loved one's story with care and authenticity.</p>
 
 <p>Remember, a biography doesn't need to be perfect—it needs to be heartfelt. The most meaningful biographies are those written with love, capturing not just the facts of a life, but the essence of who someone was and how they mattered to those who loved them.</p>`,
     date: "2024-11-28",
@@ -362,7 +366,7 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>Work with designers and manufacturers who understand both traditional memorial practices and modern technology. The best memorials balance tradition and innovation, creating lasting tributes that honor the past while embracing the future.</p>
 
-<p>To explore memorial design options, <a href="/order">visit our order page</a> or <a href="/about">learn more about our approach</a> to memorialization. We're here to help you create a memorial that honors your loved one while respecting tradition and embracing innovation.</p>
+<p>To explore memorial design options, <a href="/order">visit our order page</a> or <a href="/">learn more about our approach</a> to memorialization. We're here to help you create a memorial that honors your loved one while respecting tradition and embracing innovation.</p>
 
 <p>Remember, memorial design isn't about choosing between tradition and innovation—it's about finding the right balance that honors your loved one's memory while creating something meaningful for future generations. The best memorials respect the past while embracing the possibilities of the future.</p>`,
     date: "2024-11-15",
@@ -436,7 +440,7 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>If you're considering how to honor a loved one's memory, <a href="/order">explore our QR code memorial plaque options</a>. These plaques combine the permanence and dignity of traditional memorials with the richness and accessibility of digital content, creating lasting tributes that serve families for generations.</p>
 
-<p>To learn more about our approach to memorialization, <a href="/about">visit our about page</a> or read about <a href="https://en.wikipedia.org/wiki/Memorial" target="_blank" rel="noopener noreferrer">the history and evolution of memorial practices</a>.</p>
+<p>To learn more about our approach to memorialization, <a href="/">visit our about page</a> or read about <a href="https://en.wikipedia.org/wiki/Memorial" target="_blank" rel="noopener noreferrer">the history and evolution of memorial practices</a>.</p>
 
 <p>QR code memorial plaques represent a thoughtful evolution in how we remember and honor those we've lost. By combining traditional memorial practices with modern technology, they create new possibilities for preserving memories and maintaining connections across time and distance.</p>`,
     date: "2025-01-20",
@@ -515,7 +519,7 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>Creating a digital memorial page can be emotionally challenging, and it's okay to ask for help. Many families find it helpful to work together, dividing tasks among family members. Some people are better at writing, others at organizing photos, and others at technical setup. Working together can make the process feel more manageable and can bring families closer during a difficult time.</p>
 
-<p>If you need guidance or support, <a href="/about">learn more about our approach</a> to digital memorialization. We're here to help you create a meaningful tribute that honors your loved one's life and preserves their memory for future generations.</p>
+<p>If you need guidance or support, <a href="/">learn more about our approach</a> to digital memorialization. We're here to help you create a meaningful tribute that honors your loved one's life and preserves their memory for future generations.</p>
 
 <p>Remember, there's no right or wrong way to create a digital memorial page. What matters is that it authentically reflects your loved one's life and provides a meaningful way for family and friends to remember and honor them. Take your time, be gentle with yourself, and create something that feels right for your family.</p>
 
@@ -598,7 +602,7 @@ export const blogPostsData: BlogPostData[] = [
 
 <p>If you're ready to <a href="/order">order a QR code memorial plaque</a>, consider the factors discussed here and choose a material that feels right for your family. The combination of durable material and thoughtful design creates a memorial that will serve as a meaningful tribute for generations.</p>
 
-<p>To learn more about our approach to memorialization and the materials we offer, <a href="/about">visit our about page</a>. For more information about memorial materials and their properties, you can explore <a href="https://en.wikipedia.org/wiki/Memorial" target="_blank" rel="noopener noreferrer">memorial traditions and materials</a> used throughout history.</p>
+<p>To learn more about our approach to memorialization and the materials we offer, <a href="/">visit our about page</a>. For more information about memorial materials and their properties, you can explore <a href="https://en.wikipedia.org/wiki/Memorial" target="_blank" rel="noopener noreferrer">memorial traditions and materials</a> used throughout history.</p>
 
 <p>Remember, the material you choose is just one part of creating a meaningful memorial. The most important aspect is the love, care, and thoughtfulness you put into honoring your loved one's memory. A well-chosen material simply ensures that tribute will last for generations to come.</p>`,
     date: "2025-01-16",

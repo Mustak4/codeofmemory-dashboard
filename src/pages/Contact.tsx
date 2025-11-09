@@ -214,9 +214,6 @@ const Contact = () => {
                   <MapPin className="w-5 h-5 text-earth mt-1" aria-hidden="true" />
                   <div>
                     <p className="text-sm text-muted-foreground">Address</p>
-                    <address className="text-memory not-italic">
-                      London, United Kingdom
-                    </address>
                   </div>
                 </div>
               </div>

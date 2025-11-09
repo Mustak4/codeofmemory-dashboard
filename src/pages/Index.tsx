@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Heart, QrCode, Clock, Shield } from "lucide-react";
+import { Heart, QrCode, Clock, Shield, Users, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -117,8 +117,106 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* About Story Section */}
       <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-10 border-border/50 shadow-lg animate-fade-in bg-card/70 backdrop-blur-sm">
+              <h2 className="text-3xl md:text-4xl font-serif mb-6 text-memory text-center">{t("about.whyWeStartedTitle")}</h2>
+              <div className="space-y-4 text-lg text-foreground leading-relaxed">
+                <p>{t("about.whyWeStartedText1")}</p>
+                <p>{t("about.whyWeStartedText2")}</p>
+                <p>{t("about.whyWeStartedText3")}</p>
+                <p className="text-memory font-medium">{t("about.whyWeStartedText4")}</p>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Values Section */}
+      <section className="py-24 bg-muted/30">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-serif text-center mb-6 text-permanence">
+            {t("about.valuesTitle")}
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+            <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm">
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Heart className="w-7 h-7 text-earth" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("about.valueRespectTitle")}</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {t("about.valueRespectDescription")}
+              </p>
+            </Card>
+
+            <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "100ms" }}>
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Users className="w-7 h-7 text-earth" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("about.valueConnectionTitle")}</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {t("about.valueConnectionDescription")}
+              </p>
+            </Card>
+
+            <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "200ms" }}>
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Shield className="w-7 h-7 text-earth" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("about.valuePrivacyTitle")}</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {t("about.valuePrivacyDescription")}
+              </p>
+            </Card>
+
+            <Card className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm" style={{ animationDelay: "300ms" }}>
+              <div className="w-14 h-14 rounded-full bg-earth/20 flex items-center justify-center mb-6" aria-hidden="true">
+                <Sparkles className="w-7 h-7 text-earth" aria-hidden="true" />
+              </div>
+              <h3 className="text-xl font-serif mb-3 text-memory">{t("about.valuePermanenceTitle")}</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {t("about.valuePermanenceDescription")}
+              </p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How We Help Section */}
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto">
+            <Card className="p-10 border-border/50 shadow-lg bg-card/70 backdrop-blur-sm">
+              <h2 className="text-3xl md:text-4xl font-serif mb-6 text-memory text-center">{t("about.howWeHelpTitle")}</h2>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-medium mb-2 text-memory">{t("about.beforeLossTitle")}</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t("about.beforeLossDescription")}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium mb-2 text-memory">{t("about.afterLossTitle")}</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t("about.afterLossDescription")}
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium mb-2 text-memory">{t("about.overTimeTitle")}</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t("about.overTimeDescription")}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-24 bg-muted/30">
         <div className="container mx-auto px-6 text-center">
           <div className="max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-serif mb-6 text-permanence">
@@ -131,7 +229,7 @@ const Index = () => {
               <Link to="/order">{t("home.ctaButton")}</Link>
             </Button>
             <p className="text-sm text-muted-foreground mt-6">
-              {t("common.learnMore")} <Link to="/about" className="text-earth hover:text-memory underline">{t("common.about")}</Link> {t("common.or")} {t("common.visit")} <Link to="/faq" className="text-earth hover:text-memory underline">{t("common.faq")}</Link> {t("common.forAnswers")}.
+              {t("common.learnMore")} {t("common.visit")} <Link to="/faq" className="text-earth hover:text-memory underline">{t("common.faq")}</Link> {t("common.forAnswers")} {t("common.or")} <Link to="/contact" className="text-earth hover:text-memory underline">{t("common.getInTouch")}</Link>.
             </p>
           </div>
         </div>

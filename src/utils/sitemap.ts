@@ -12,7 +12,6 @@ export interface SitemapEntry {
 
 const baseRoutes: Array<{ path: string; changefreq: SitemapEntry["changefreq"]; priority: number }> = [
   { path: "/", changefreq: "weekly", priority: 1.0 },
-  { path: "/about", changefreq: "monthly", priority: 0.9 },
   { path: "/order", changefreq: "weekly", priority: 0.9 },
   { path: "/faq", changefreq: "monthly", priority: 0.9 },
   { path: "/reviews", changefreq: "weekly", priority: 0.9 },
