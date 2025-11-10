@@ -65,24 +65,6 @@ const Dashboard = () => {
         progress: 65,
         pendingSubmissions: 2,
       },
-      {
-        id: "mem-2",
-        title: "Jonathan “Jon” Mitchell",
-        slug: "jonathan-mitchell",
-        status: "published",
-        updatedAt: "2025-11-02T09:45:00.000Z",
-        progress: 100,
-        pendingSubmissions: 0,
-      },
-      {
-        id: "mem-3",
-        title: "Amelia Carter",
-        slug: "amelia-carter",
-        status: "pending",
-        updatedAt: "2025-11-01T19:12:00.000Z",
-        progress: 42,
-        pendingSubmissions: 1,
-      },
     ],
     [],
   );
@@ -125,7 +107,7 @@ const Dashboard = () => {
       {
         id: "feed-2",
         timestamp: "2025-11-03T12:22:00.000Z",
-        description: "You updated the theme colors for Jonathan Mitchell’s memorial.",
+        description: "You updated the biography for Maria Lopez's memorial.",
         category: "update",
       },
       {
@@ -501,7 +483,7 @@ const Dashboard = () => {
               <CardContent className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-3">
                 <div>
                   <p className="font-medium text-foreground">Included</p>
-                  <p>Up to 3 memorials, 10 GB media, visitor submissions</p>
+                  <p>1 memorial, 1 QR code, 10 GB media, visitor submissions</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Next invoice</p>

@@ -11,7 +11,7 @@ const emailRegex =
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Signin = () => {
-  const { user, loading, requestMagicLink, completeMagicLink } = useAuth();
+  const { user, loading, requestMagicLink, completeMagicLink, verifyPurchaseAndLogin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -25,6 +25,7 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [step, setStep] = useState<"request" | "verify">("request");
+  const [verifyingPurchase, setVerifyingPurchase] = useState(false);
 
   useEffect(() => {
     const mode = searchParams.get("mode");
@@ -35,10 +36,54 @@ const Signin = () => {
     }
   }, [searchParams]);
 
+  // Handle purchase redirect from codeofmemory.com
+  useEffect(() => {
+    const purchaseToken = searchParams.get("purchase_token");
+    const emailParam = searchParams.get("email");
+    
+    if (!loading && !user && purchaseToken) {
+      (async () => {
+        try {
+          setVerifyingPurchase(true);
+          setSubmitting(true);
+          const result = await verifyPurchaseAndLogin(purchaseToken, emailParam || undefined);
+          
+          if (result.success) {
+            toast({ 
+              title: "Purchase verified", 
+              description: "Welcome! Your account has been created. Let's set up your memorial." 
+            });
+            // Redirect to onboarding after purchase
+            navigate("/onboarding", { replace: true });
+          } else {
+            toast({ 
+              title: "Verification failed", 
+              description: result.error || "Could not verify your purchase. Please contact support.",
+              variant: "destructive"
+            });
+          }
+        } catch (error) {
+          toast({ 
+            title: "Error", 
+            description: "An error occurred during purchase verification. Please try again.",
+            variant: "destructive"
+          });
+        } finally {
+          setVerifyingPurchase(false);
+          setSubmitting(false);
+        }
+      })();
+    }
+  }, [searchParams, loading, user, verifyPurchaseAndLogin, navigate, toast]);
+
+  // Handle legacy auto-login (for magic links)
   useEffect(() => {
     const autoLogin = searchParams.get("autologin");
     const emailParam = searchParams.get("email");
-    if (!loading && !user && autoLogin === "1" && emailParam) {
+    const purchaseToken = searchParams.get("purchase_token");
+    
+    // Only run if there's no purchase token (purchase flow takes precedence)
+    if (!loading && !user && !purchaseToken && autoLogin === "1" && emailParam) {
       (async () => {
         try {
           setSubmitting(true);
@@ -89,6 +134,25 @@ const Signin = () => {
 
   if (!loading && user) {
     return null;
+  }
+
+  // Show loading state when verifying purchase
+  if (verifyingPurchase) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Verifying your purchase</CardTitle>
+            <CardDescription>Please wait while we set up your account...</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

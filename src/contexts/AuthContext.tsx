@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { verifyPurchaseToken } from "@/utils/purchaseVerification";
 
 type AuthUser = {
   id: string;
@@ -13,6 +14,8 @@ type AuthContextValue = {
   // Placeholder: In MVP we simulate magic-link flow locally.
   requestMagicLink: (email: string) => Promise<void>;
   completeMagicLink: (email: string, token?: string) => Promise<void>;
+  // Verify purchase token from codeofmemory.com and auto-login user
+  verifyPurchaseAndLogin: (purchaseToken: string, email?: string) => Promise<{ success: boolean; error?: string }>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -60,6 +63,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
+  const verifyPurchaseAndLogin = async (purchaseToken: string, email?: string) => {
+    try {
+      const result = await verifyPurchaseToken(purchaseToken, email);
+      
+      if (!result.success) {
+        return { success: false, error: result.error || "Purchase verification failed" };
+      }
+
+      // Auto-login the user with the verified email
+      const verifiedUser: AuthUser = {
+        id: crypto?.randomUUID?.() ?? String(Date.now()),
+        email: result.email,
+        emailVerified: true,
+      };
+      
+      setUser(verifiedUser);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(verifiedUser));
+      
+      // Store purchase info for later use (e.g., onboarding)
+      if (result.orderId) {
+        localStorage.setItem("com-purchase-order-id", result.orderId);
+      }
+      
+      return { success: true };
+    } catch (error) {
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : "Purchase verification failed" 
+      };
+    }
+  };
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -67,6 +102,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signOut,
       requestMagicLink,
       completeMagicLink,
+      verifyPurchaseAndLogin,
     }),
     [user, loading]
   );

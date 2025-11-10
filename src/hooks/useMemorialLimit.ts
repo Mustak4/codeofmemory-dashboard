@@ -29,8 +29,6 @@ export const useMemorialLimit = () => {
     // In real app, this would be a backend call
     const mockMemorials = [
       { id: "mem-1", status: "draft" },
-      { id: "mem-2", status: "published" },
-      { id: "mem-3", status: "pending" },
     ];
     return mockMemorials.filter((m) => m.status === "published").length;
   }, [user]);

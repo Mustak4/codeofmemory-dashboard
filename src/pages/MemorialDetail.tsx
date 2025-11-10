@@ -36,7 +36,7 @@ const useMockMemorialById = (id: string | undefined): MemorialDetailData | null 
         id: "mem-1",
         name: "Maria Lopez",
         slug: "maria-lopez",
-        dateOfBirth: "1951-03-22",
+        dateOfBirth: "1991-03-22",
         dateOfDeath: "2022-11-09",
         status: "draft",
         biographyHtml:
@@ -53,46 +53,7 @@ const useMockMemorialById = (id: string | undefined): MemorialDetailData | null 
           siblings: ["Isabella Cruz", "Miguel Lopez"],
           grandchildren: "5 grandchildren",
         },
-        avatarUrl: "/logo.png",
-        heroUrl: "/src/assets/hero-background.jpg",
-      },
-      {
-        id: "mem-2",
-        name: "Jonathan “Jon” Mitchell",
-        slug: "jonathan-mitchell",
-        dateOfBirth: "1968-08-13",
-        dateOfDeath: "2024-02-05",
-        status: "published",
-        biographyHtml:
-          "<p>Jon was an avid cyclist and a community volunteer. He believed deeply in the power of neighbors helping neighbors.</p>",
-        gallery: [
-          { id: "g1", url: "/placeholder.svg", alt: "Riding at sunrise" },
-          { id: "g2", url: "/placeholder.svg", alt: "Community event" },
-        ],
-        family: {
-          parents: ["Paul Mitchell", "Sandra Mitchell"],
-          spouses: ["Rachel Mitchell"],
-          children: ["Noah Mitchell"],
-          siblings: ["Sarah King"],
-        },
-        avatarUrl: "/logo.png",
-        heroUrl: "/src/assets/hero-background.jpg",
-      },
-      {
-        id: "mem-3",
-        name: "Amelia Carter",
-        slug: "amelia-carter",
-        dateOfBirth: "1974-04-02",
-        dateOfDeath: "2023-12-28",
-        status: "pending",
-        biographyHtml:
-          "<p>Amelia lit up every room with her sense of humor and boundless curiosity. She cherished travel and learning new languages.</p>",
-        gallery: [{ id: "g1", url: "/placeholder.svg", alt: "Amelia traveling" }],
-        family: {
-          spouses: ["Jamie Carter"],
-          siblings: ["Mark Carter", "Jenna Carter"],
-        },
-        avatarUrl: "/logo.png",
+        avatarUrl: "/marialopez.png",
         heroUrl: "/src/assets/hero-background.jpg",
       },
     ],
@@ -137,20 +98,23 @@ const MemorialDetail = () => {
   return (
     <div className="min-h-screen bg-muted/10">
       {/* Hero */}
-      <div className="relative h-56 w-full overflow-hidden rounded-b-3xl border-b bg-muted/40">
+      <div className="relative h-56 w-full overflow-visible rounded-b-3xl border-b bg-muted/40">
         {memorial.heroUrl ? (
           <img src={memorial.heroUrl} alt="" className="h-full w-full object-cover" />
         ) : (
           <div className="h-full w-full bg-gradient-to-b from-muted to-background" />
         )}
-      </div>
-
-      <div className="mx-auto max-w-4xl px-4 pb-12">
-        {/* Header with avatar, name, dates, status + actions */}
-        <div className="-mt-14 flex flex-col items-center gap-4 text-center sm:-mt-16">
+        {/* Circular avatar positioned over the cover */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
           <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-background shadow-md sm:h-32 sm:w-32">
             <img src={memorial.avatarUrl ?? "/logo.png"} alt={memorial.name} className="h-full w-full object-cover" />
           </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-4xl px-4 pb-12">
+        {/* Header with name, dates, status + actions */}
+        <div className="mt-14 flex flex-col items-center gap-4 text-center sm:mt-16">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{memorial.name}</h1>
             <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
