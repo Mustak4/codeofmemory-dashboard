@@ -2,47 +2,34 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import ScrollToTop from "@/components/ScrollToTop";
-import PlausibleAnalytics from "@/components/PlausibleAnalytics";
-import { LanguageProvider } from "@/contexts/LanguageContext";
-import { languages } from "@/i18n/config";
-import Index from "./pages/Index";
-import Memorial from "./pages/Memorial";
-import CreateTribute from "./pages/CreateTribute";
-import Contact from "./pages/Contact";
-import Reviews from "./pages/Reviews";
-import FAQ from "./pages/FAQ";
-import Order from "./pages/Order";
-import Blog from "./pages/Blog";
-import NotFound from "./pages/NotFound";
-import BlogPostPage from "./pages/blog/BlogPostPage";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import Signin from "./pages/Signin";
+import Dashboard from "./pages/Dashboard";
+import Onboarding from "./pages/Onboarding";
+import Payment from "./pages/Payment";
+import MemorialDetail from "./pages/MemorialDetail";
+import MemorialProfileEditor from "./pages/MemorialProfileEditor";
 
 const queryClient = new QueryClient();
 
-// Helper to create localized routes (including /en/ prefix)
-const createLocalizedRoute = (path: string, element: React.ReactElement, includeRoot = false) => {
-  const routes: React.ReactElement[] = [];
-  
-  // Create routes for all languages including English with /en/ prefix
-  languages.forEach((lang) => {
-    routes.push(
-      <Route
-        key={`${lang.code}${path}`}
-        path={`${lang.urlPrefix}${path}`}
-        element={element}
-      />
-    );
-  });
-  
-  // Also support root path without prefix for backward compatibility
-  if (includeRoot || path === "/") {
-    routes.push(
-      <Route key={`root${path}`} path={path} element={element} />
+const RequireAuth = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center text-muted-foreground">
+        Loading...
+      </div>
     );
   }
-  
-  return routes;
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return <Outlet />;
 };
 
 const App = () => (
@@ -51,26 +38,20 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <LanguageProvider>
-          <PlausibleAnalytics />
+        <AuthProvider>
           <ScrollToTop />
           <Routes>
-            {createLocalizedRoute("/", <Index />)}
-            {createLocalizedRoute("/contact", <Contact />)}
-            {createLocalizedRoute("/reviews", <Reviews />)}
-            {createLocalizedRoute("/faq", <FAQ />)}
-            {createLocalizedRoute("/order", <Order />)}
-            {/* Blog routes - include root paths for backward compatibility */}
-            <Route key="blog-root" path="/blog" element={<Blog />} />
-            {createLocalizedRoute("/blog", <Blog />)}
-            <Route key="blog-slug-root" path="/blog/:slug" element={<BlogPostPage />} />
-            {createLocalizedRoute("/blog/:slug", <BlogPostPage />)}
-            {createLocalizedRoute("/create", <CreateTribute />)}
-            {createLocalizedRoute("/memorial/:id", <Memorial />)}
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route path="/signin" element={<Signin />} />
+            <Route element={<RequireAuth />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/memorial/:id" element={<MemorialDetail />} />
+              <Route path="/memorial/:id/edit" element={<MemorialProfileEditor />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/signin" replace />} />
           </Routes>
-        </LanguageProvider>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
