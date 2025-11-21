@@ -1,4 +1,7 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -155,7 +158,7 @@
       "destination": "/sitemap.xml"
     },
     {
-      "source": "/((?!api|_next|assets|.*\\..*).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
