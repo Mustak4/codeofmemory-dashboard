@@ -9,12 +9,11 @@ import { useAuth } from "@/contexts/AuthContext";
 export const useMemorialLimit = () => {
   const { user } = useAuth();
 
-  // Mock: In production, this would query the backend for published memorials count
-  // For now, we simulate by checking localStorage or a mock data source
+  // In production, this would query the backend for published memorials count
   const publishedCount = useMemo(() => {
     if (!user) return 0;
     
-    // Check localStorage for published memorials (mock implementation)
+    // Check localStorage for published memorials
     try {
       const stored = localStorage.getItem(`com-memorials-${user.id}`);
       if (stored) {
@@ -25,12 +24,7 @@ export const useMemorialLimit = () => {
       // ignore
     }
     
-    // Fallback: check mock data from dashboard
-    // In real app, this would be a backend call
-    const mockMemorials = [
-      { id: "mem-1", status: "draft" },
-    ];
-    return mockMemorials.filter((m) => m.status === "published").length;
+    return 0;
   }, [user]);
 
   const canPublish = publishedCount < 1;

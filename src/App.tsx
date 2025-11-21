@@ -37,15 +37,23 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <AuthProvider>
           <ScrollToTop />
           <Routes>
             <Route path="/signin" element={<Signin />} />
+            {/* Public route for viewing published memorials by slug */}
+            <Route path="/memorial/:slug" element={<MemorialDetail />} />
             <Route element={<RequireAuth />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/payment" element={<Payment />} />
+              <Route path="/create-memorial" element={<MemorialProfileEditor />} />
               <Route path="/memorial/:id" element={<MemorialDetail />} />
               <Route path="/memorial/:id/edit" element={<MemorialProfileEditor />} />
             </Route>

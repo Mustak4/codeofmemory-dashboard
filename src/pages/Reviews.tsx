@@ -5,62 +5,16 @@ import { Card } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const reviews = [
-  {
-    id: 1,
-    name: "Sarah Mitchell",
-    location: "Manchester, UK",
-    date: "January 2025",
-    rating: 5,
-    text: "CodeOfMemory helped us create something truly special for my father. The QR code on his plaque connects to a beautiful page filled with stories from family and friends. It's comforting to know his memory will live on digitally.",
-    memorial: "In memory of Robert Mitchell",
-  },
-  {
-    id: 2,
-    name: "James Chen",
-    location: "London, UK",
-    date: "December 2024",
-    rating: 5,
-    text: "The process was so gentle and thoughtful. During a difficult time, having this guided way to celebrate my mother's life meant everything. The team was incredibly supportive.",
-    memorial: "In memory of Linda Chen",
-  },
-  {
-    id: 3,
-    name: "Emma Williams",
-    location: "Edinburgh, UK",
-    date: "November 2024",
-    rating: 5,
-    text: "I ordered a plaque for my grandmother's memorial. The quality is exceptional, and the QR code works perfectly. Family members who couldn't attend the service can now see photos and read stories about her remarkable life.",
-    memorial: "In memory of Margaret Williams",
-  },
-  {
-    id: 4,
-    name: "David Thompson",
-    location: "Bristol, UK",
-    date: "October 2024",
-    rating: 5,
-    text: "We used CodeOfMemory to pre-plan my wife's memorial while she was still with us. She loved being able to choose her photos and write her own story. It was a beautiful, healing experience for our family.",
-    memorial: "In memory of Helen Thompson",
-  },
-  {
-    id: 5,
-    name: "Rachel Foster",
-    location: "Birmingham, UK",
-    date: "September 2024",
-    rating: 5,
-    text: "The memorial page is beautifully designed and so easy to use. We've been able to add new memories over time, and it's become a place where the family gathers digitally to remember and share stories.",
-    memorial: "In memory of Peter Foster",
-  },
-  {
-    id: 6,
-    name: "Michael O'Connor",
-    location: "Dublin, Ireland",
-    date: "August 2024",
-    rating: 5,
-    text: "As a funeral director, I've recommended CodeOfMemory to many families. The response has been overwhelmingly positive. It's a dignified, modern way to preserve memories.",
-    memorial: "Professional recommendation",
-  },
-];
+// Reviews will be fetched from database or CMS
+const reviews: Array<{
+  id: number;
+  name: string;
+  location: string;
+  date: string;
+  rating: number;
+  text: string;
+  memorial: string;
+}> = [];
 
 const Reviews = () => {
   const aggregateRatingSchema = {
@@ -69,8 +23,8 @@ const Reviews = () => {
     name: "QR Code Memorial Plaque",
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: "5.0",
-      reviewCount: "127",
+      ratingValue: reviews.length > 0 ? "5.0" : "0",
+      reviewCount: reviews.length.toString(),
       bestRating: "5",
       worstRating: "1",
     },
@@ -80,9 +34,9 @@ const Reviews = () => {
     <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
       <SEO
         title="Customer Reviews – CodeOfMemory"
-        description="Read stories from families who've trusted CodeOfMemory with their most precious memories. 5.0 out of 5 stars from 127 reviews."
+        description={`Read stories from families who've trusted CodeOfMemory with their most precious memories. ${reviews.length > 0 ? "5.0" : "0"} out of 5 stars from ${reviews.length} review${reviews.length !== 1 ? "s" : ""}.`}
         ogTitle="Customer Reviews – CodeOfMemory"
-        ogDescription="5.0 out of 5 stars from 127 reviews. Read stories from families who've created lasting QR code memorial plaques."
+        ogDescription={`${reviews.length > 0 ? "5.0" : "0"} out of 5 stars from ${reviews.length} review${reviews.length !== 1 ? "s" : ""}. Read stories from families who've created lasting QR code memorial plaques.`}
         canonical="/reviews"
         structuredData={aggregateRatingSchema}
       />
@@ -106,14 +60,19 @@ const Reviews = () => {
                 <Star key={star} className="w-8 h-8 fill-earth text-earth" />
               ))}
             </div>
-            <p className="text-3xl font-serif text-memory mb-2">5.0 out of 5</p>
-            <p className="text-muted-foreground">Based on 127 reviews</p>
+            <p className="text-3xl font-serif text-memory mb-2">{reviews.length > 0 ? "5.0" : "0"} out of 5</p>
+            <p className="text-muted-foreground">Based on {reviews.length} review{reviews.length !== 1 ? "s" : ""}</p>
           </div>
         </Card>
 
         {/* Reviews Grid */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-12">
-          {reviews.map((review, index) => (
+        {reviews.length === 0 ? (
+          <Card className="max-w-2xl mx-auto p-8 mb-12 border-border/50 shadow-lg bg-card/70 backdrop-blur-sm">
+            <p className="text-muted-foreground text-center">No reviews available yet.</p>
+          </Card>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-12">
+            {reviews.map((review, index) => (
             <Card
               key={review.id}
               className="p-8 border-border/50 hover:shadow-lg transition-all duration-300 animate-fade-in bg-card/50 backdrop-blur-sm"
@@ -142,7 +101,8 @@ const Reviews = () => {
               </div>
             </Card>
           ))}
-        </div>
+          </div>
+        )}
 
         {/* CTA */}
         <div className="max-w-2xl mx-auto text-center">

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, BookOpen, ListChecks, History, CreditCard, ArrowUpRight, Plus, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,15 +8,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useMemorialLimit } from "@/hooks/useMemorialLimit";
+import { supabase } from "@/lib/supabase";
 
 type MemorialSummary = {
   id: string;
-  title: string;
+  name: string;
   slug: string;
   status: "draft" | "published" | "pending";
   updatedAt: string;
-  progress: number;
-  pendingSubmissions: number;
+  dateOfBirth?: string;
+  dateOfDeath?: string;
+  biographyHtml?: string;
+  avatarUrl?: string;
+  heroUrl?: string;
 };
 
 type NextStep = {
@@ -54,73 +58,63 @@ const Dashboard = () => {
     [],
   );
 
-  const memorials = useMemo<MemorialSummary[]>(
-    () => [
-      {
-        id: "mem-1",
-        title: "Maria Lopez",
-        slug: "maria-lopez",
-        status: "draft",
-        updatedAt: "2025-11-04T15:32:00.000Z",
-        progress: 65,
-        pendingSubmissions: 2,
-      },
-    ],
-    [],
-  );
+  const [memorials, setMemorials] = useState<MemorialSummary[]>([]);
+  const [loadingMemorials, setLoadingMemorials] = useState(true);
 
-  const nextSteps = useMemo<NextStep[]>(
-    () => [
-      {
-        id: "step-1",
-        title: "Upload gallery media",
-        description: "Add photos that capture their story. Organize them in the order you want guests to see.",
-        cta: { label: "Go to Media Library", to: "/dashboard?section=media" },
-        status: "ready",
-      },
-      {
-        id: "step-2",
-        title: "Finalize biography",
-        description: "Polish the biography and include key milestones or anecdotes you want visitors to remember.",
-        cta: { label: "Edit biography", to: "/dashboard?section=bio" },
-        status: "in-progress",
-      },
-      {
-        id: "step-3",
-        title: "Review guest submissions",
-        description: "Approve the memories that friends and family have shared so they appear publicly.",
-        cta: { label: "Open submissions", to: "/dashboard?section=submissions" },
-        status: "blocked",
-      },
-    ],
-    [],
-  );
+  const nextSteps = useMemo<NextStep[]>(() => [], []);
 
-  const activity = useMemo<ActivityItem[]>(
-    () => [
-      {
-        id: "feed-1",
-        timestamp: "2025-11-04T18:05:00.000Z",
-        description: "Emily Nguyen submitted a memory with a photo for Maria Lopez.",
-        category: "submission",
-      },
-      {
-        id: "feed-2",
-        timestamp: "2025-11-03T12:22:00.000Z",
-        description: "You updated the biography for Maria Lopez's memorial.",
-        category: "update",
-      },
-      {
-        id: "feed-3",
-        timestamp: "2025-11-02T09:48:00.000Z",
-        description: "Payment for Memorial Plan • Pro was processed successfully.",
-        category: "system",
-      },
-    ],
-    [],
-  );
+  const activity = useMemo<ActivityItem[]>(() => [], []);
 
   const [activeSection, setActiveSection] = useState<string>("overview");
+
+  // Load memorials from Supabase
+  useEffect(() => {
+    const loadMemorials = async () => {
+      if (!user) {
+        setLoadingMemorials(false);
+        return;
+      }
+
+      try {
+        setLoadingMemorials(true);
+        const { data, error } = await supabase
+          .from("memorials")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("updated_at", { ascending: false });
+
+        if (error) throw error;
+
+        if (data) {
+          setMemorials(
+            data.map((memorial) => ({
+              id: memorial.id,
+              name: memorial.name || "",
+              slug: memorial.slug || "",
+              status: memorial.status || "draft",
+              updatedAt: memorial.updated_at || memorial.created_at || new Date().toISOString(),
+              dateOfBirth: memorial.date_of_birth || undefined,
+              dateOfDeath: memorial.date_of_death || undefined,
+              biographyHtml: memorial.biography_html || undefined,
+              avatarUrl: memorial.avatar_url || undefined,
+              heroUrl: memorial.hero_url || undefined,
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error loading memorials:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load memorials. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoadingMemorials(false);
+      }
+    };
+
+    loadMemorials();
+  }, [user, toast]);
 
   useEffect(() => {
     const sectionElements = navItems
@@ -156,7 +150,18 @@ const Dashboard = () => {
 
   const totalMemorials = memorials.length;
   const publishedMemorials = memorials.filter((mem) => mem.status === "published").length;
-  const pendingSubmissions = memorials.reduce((acc, mem) => acc + mem.pendingSubmissions, 0);
+  
+  // Calculate progress for each memorial
+  const calculateProgress = (memorial: MemorialSummary): number => {
+    let progress = 0;
+    if (memorial.name) progress += 20;
+    if (memorial.slug) progress += 10;
+    if (memorial.dateOfBirth && memorial.dateOfDeath) progress += 20;
+    if (memorial.biographyHtml && memorial.biographyHtml.length > 50) progress += 20;
+    if (memorial.avatarUrl) progress += 15;
+    if (memorial.heroUrl) progress += 15;
+    return progress;
+  };
 
   const stats = [
     {
@@ -165,13 +170,13 @@ const Dashboard = () => {
       helper: `${publishedMemorials} published`,
     },
     {
-      label: "Pending submissions",
-      value: `${pendingSubmissions}`,
-      helper: "Awaiting review",
+      label: "Draft memorials",
+      value: `${memorials.filter((mem) => mem.status === "draft").length}`,
+      helper: "In progress",
     },
     {
       label: "Storage",
-      value: "2.1 GB",
+      value: "0 GB",
       helper: "of 10 GB plan limit",
     },
     {
@@ -283,12 +288,6 @@ const Dashboard = () => {
                   <Button variant="outline" onClick={signOut}>
                     Sign out
                   </Button>
-                  <Button asChild>
-                    <Link to="/onboarding">
-                      Resume onboarding
-                      <ArrowUpRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
                 </div>
               </div>
               <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -308,86 +307,118 @@ const Dashboard = () => {
           </section>
 
           <section id="memorials" className="space-y-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold">Your memorials</h2>
-                <p className="text-sm text-muted-foreground">
-                  Continue editing, publish drafts, and share with friends and family.
-                </p>
-              </div>
-              <Button
-                onClick={() => {
-                  if (limitReached) {
-                    toast({
-                      title: "Publish limit reached",
-                      description: "You can only publish one memorial at a time. Order another memorial to publish more.",
-                      variant: "destructive",
-                    });
-                    navigate("/order");
-                  } else {
-                    toast({
-                      title: "Create memorial",
-                      description: "Memorial creation flow is coming soon.",
-                    });
-                  }
-                }}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                New memorial
-              </Button>
+            <div className="flex flex-col gap-2">
+              <h2 className="text-xl font-semibold">Your memorials</h2>
+              <p className="text-sm text-muted-foreground">
+                Continue editing, publish drafts, and share with friends and family.
+              </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {memorials.map((memorial) => (
-                <Card key={memorial.id} className="flex flex-col justify-between rounded-2xl border bg-background shadow-sm">
-                  <CardHeader className="space-y-2">
-                    <div className="flex items-center justify-between gap-2">
-                      <CardTitle className="text-lg font-semibold">{memorial.title}</CardTitle>
-                      {renderStatusBadge(memorial.status)}
+            {loadingMemorials ? (
+              <Card className="rounded-2xl border bg-background shadow-sm">
+                <CardContent className="flex flex-col items-center justify-center py-16">
+                  <p className="text-sm text-muted-foreground">Loading memorials...</p>
+                </CardContent>
+              </Card>
+            ) : memorials.length === 0 ? (
+              <Card className="rounded-2xl border bg-background shadow-sm">
+                <CardContent className="flex flex-col items-center justify-center py-16 gap-6">
+                  <p className="text-sm text-muted-foreground">No memorials yet.</p>
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      if (limitReached) {
+                        toast({
+                          title: "Publish limit reached",
+                          description: "You can only publish one memorial at a time. Order another memorial to publish more.",
+                          variant: "destructive",
+                        });
+                        navigate("/order");
+                        return;
+                      }
+                      
+                      // Navigate to the memorial creation page
+                      navigate("/create-memorial");
+                    }}
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Create your memorial
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {memorials.map((memorial) => {
+                  const progress = calculateProgress(memorial);
+                  return (
+                    <Card key={memorial.id} className="flex flex-col justify-between rounded-2xl border bg-background shadow-sm hover:shadow-md transition-shadow">
+                      <CardHeader className="space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <CardTitle className="text-lg font-semibold line-clamp-1">{memorial.name || "Untitled Memorial"}</CardTitle>
+                          {renderStatusBadge(memorial.status)}
+                        </div>
+                        {memorial.slug && (
+                          <CardDescription className="line-clamp-1">codeofmemory.com/memorial/{memorial.slug}</CardDescription>
+                        )}
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        {memorial.avatarUrl && (
+                          <div className="h-32 w-full rounded-lg overflow-hidden bg-muted">
+                            <img src={memorial.avatarUrl} alt={memorial.name} className="h-full w-full object-cover" />
+                          </div>
+                        )}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                            <span>Build progress</span>
+                            <span>{progress}%</span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-muted">
+                            <div
+                              className="h-2 rounded-full bg-primary transition-[width]"
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          <span>
+                            Updated {new Date(memorial.updatedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                          </span>
+                        </div>
+                      </CardContent>
+                      <CardFooter className="flex flex-wrap items-center justify-end gap-2 border-t bg-muted/50 p-4">
+                        {memorial.status === "published" && memorial.slug && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/memorial/${memorial.slug}`)}
+                          >
+                            View
+                          </Button>
+                        )}
+                        <Button size="sm" onClick={() => navigate(`/memorial/${memorial.id}/edit`)}>
+                          Edit
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
+                {/* Add new memorial card */}
+                <Card 
+                  className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-muted-foreground/25 bg-background shadow-sm hover:border-primary/50 hover:bg-muted/30 transition-all cursor-pointer"
+                  onClick={() => navigate("/order")}
+                >
+                  <CardContent className="flex flex-col items-center justify-center py-16 gap-4">
+                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+                      <Plus className="h-8 w-8 text-muted-foreground" />
                     </div>
-                    <CardDescription>codeofmemory.com/memorial/{memorial.slug}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Build progress</span>
-                        <span>{memorial.progress}%</span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-muted">
-                        <div
-                          className="h-2 rounded-full bg-primary transition-[width]"
-                          style={{ width: `${memorial.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>
-                        Updated {new Date(memorial.updatedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
-                      </span>
-                      {memorial.pendingSubmissions > 0 ? (
-                        <span className="font-medium text-amber-500">
-                          {memorial.pendingSubmissions} pending submission{memorial.pendingSubmissions > 1 ? "s" : ""}
-                        </span>
-                      ) : (
-                        <span>No pending submissions</span>
-                      )}
+                    <div className="text-center">
+                      <p className="text-sm font-medium">Order new QR code</p>
+                      <p className="text-xs text-muted-foreground mt-1">Create another memorial</p>
                     </div>
                   </CardContent>
-                  <CardFooter className="flex flex-wrap items-center justify-end gap-2 border-t bg-muted/50 p-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/memorial/${memorial.id}`)}
-                    >
-                      Preview
-                    </Button>
-                    <Button size="sm" onClick={() => navigate(`/memorial/${memorial.id}/edit`)}>
-                      Edit memorial
-                    </Button>
-                  </CardFooter>
                 </Card>
-              ))}
-            </div>
+              </div>
+            )}
           </section>
 
           <section id="tasks" className="space-y-5">
@@ -397,8 +428,15 @@ const Dashboard = () => {
                 Recommended actions to get your memorials ready for visitors.
               </p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              {nextSteps.map((step) => (
+            {nextSteps.length === 0 ? (
+              <Card className="rounded-2xl border bg-background">
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <p className="text-sm text-muted-foreground">No next steps available.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2">
+                {nextSteps.map((step) => (
                 <Card key={step.id} className="rounded-2xl border bg-background">
                   <CardHeader className="flex flex-row items-start justify-between space-y-0">
                     <div>
@@ -419,7 +457,8 @@ const Dashboard = () => {
                   </CardFooter>
                 </Card>
               ))}
-            </div>
+              </div>
+            )}
           </section>
 
           <section id="activity" className="space-y-5">
@@ -431,7 +470,12 @@ const Dashboard = () => {
             </div>
             <Card className="rounded-2xl border bg-background">
               <CardContent className="divide-y px-0">
-                {activity.map((item, index) => (
+                {activity.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <p className="text-sm text-muted-foreground">No recent activity.</p>
+                  </div>
+                ) : (
+                  activity.map((item, index) => (
                   <div key={item.id} className="flex flex-col gap-1 px-6 py-4 md:flex-row md:items-center md:justify-between">
                     <div>
                       <p className="text-sm font-medium">{item.description}</p>
@@ -458,7 +502,8 @@ const Dashboard = () => {
                       {item.category === "system" && "System"}
                     </Badge>
                   </div>
-                ))}
+                ))
+                )}
               </CardContent>
             </Card>
           </section>
@@ -471,38 +516,9 @@ const Dashboard = () => {
               </p>
             </div>
             <Card className="rounded-2xl border bg-background">
-              <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <CardTitle>Memorial Plan • Pro</CardTitle>
-                  <CardDescription>
-                    Renewal on {new Date("2026-01-15T12:00:00.000Z").toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
-                  </CardDescription>
-                </div>
-                <Badge className="w-fit bg-emerald-500/15 text-emerald-600">Active</Badge>
-              </CardHeader>
-              <CardContent className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-3">
-                <div>
-                  <p className="font-medium text-foreground">Included</p>
-                  <p>1 memorial, 1 QR code, 10 GB media, visitor submissions</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Next invoice</p>
-                  <p>$149/year</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Payment method</p>
-                  <p>Visa ending in •••• 4242</p>
-                </div>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <p className="text-sm text-muted-foreground">No billing information available.</p>
               </CardContent>
-              <CardFooter className="flex flex-col gap-2 border-t bg-muted/40 p-4 sm:flex-row sm:justify-end">
-                <Button variant="outline" onClick={() => navigate("/payment")}>
-                  Update payment method
-                </Button>
-                <Button onClick={() => navigate("/payment")}>
-                  View invoices
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </CardFooter>
             </Card>
           </section>
         </main>

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { supabase } from "@/lib/supabase";
 import { verifyPurchaseToken } from "@/utils/purchaseVerification";
+import type { User } from "@supabase/supabase-js";
 
 type AuthUser = {
   id: string;
@@ -10,57 +12,75 @@ type AuthUser = {
 type AuthContextValue = {
   user: AuthUser | null;
   loading: boolean;
-  signOut: () => void;
-  // Placeholder: In MVP we simulate magic-link flow locally.
-  requestMagicLink: (email: string) => Promise<void>;
-  completeMagicLink: (email: string, token?: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   // Verify purchase token from codeofmemory.com and auto-login user
   verifyPurchaseAndLogin: (purchaseToken: string, email?: string) => Promise<{ success: boolean; error?: string }>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const LOCAL_STORAGE_KEY = "com-auth-user";
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Convert Supabase User to AuthUser
+  const mapSupabaseUser = (supabaseUser: User | null): AuthUser | null => {
+    if (!supabaseUser) return null;
+    return {
+      id: supabaseUser.id,
+      email: supabaseUser.email || "",
+      emailVerified: supabaseUser.email_confirmed_at !== null,
+    };
+  };
+
+  // Initialize auth state and listen for changes
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as AuthUser;
-        setUser(parsed);
-      }
-    } catch {
-      // ignore
-    } finally {
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(mapSupabaseUser(session?.user ?? null));
       setLoading(false);
-    }
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(mapSupabaseUser(session?.user ?? null));
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const requestMagicLink = async (email: string) => {
-    // In production, call backend to send email magic link.
-    // Here we just simulate delay.
-    await new Promise((r) => setTimeout(r, 500));
-    // No-op
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      if (data.user) {
+        setUser(mapSupabaseUser(data.user));
+        return { success: true };
+      }
+
+      return { success: false, error: "Sign in failed" };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "An error occurred during sign in",
+      };
+    }
   };
 
-  const completeMagicLink = async (email: string) => {
-    // Simulate verification and set user
-    const simulatedUser: AuthUser = {
-      id: crypto?.randomUUID?.() ?? String(Date.now()),
-      email,
-      emailVerified: true,
-    };
-    setUser(simulatedUser);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(simulatedUser));
-  };
-
-  const signOut = () => {
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
   const verifyPurchaseAndLogin = async (purchaseToken: string, email?: string) => {
@@ -71,21 +91,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, error: result.error || "Purchase verification failed" };
       }
 
-      // Auto-login the user with the verified email
-      const verifiedUser: AuthUser = {
-        id: crypto?.randomUUID?.() ?? String(Date.now()),
-        email: result.email,
-        emailVerified: true,
-      };
-      
-      setUser(verifiedUser);
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(verifiedUser));
-      
       // Store purchase info for later use (e.g., onboarding)
       if (result.orderId) {
         localStorage.setItem("com-purchase-order-id", result.orderId);
       }
       
+      // Note: User should already be signed in via Supabase if they have an account
+      // If they don't have an account yet, they'll need to sign in with credentials sent via email
       return { success: true };
     } catch (error) {
       return { 
@@ -100,8 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       user,
       loading,
       signOut,
-      requestMagicLink,
-      completeMagicLink,
+      signIn,
       verifyPurchaseAndLogin,
     }),
     [user, loading]

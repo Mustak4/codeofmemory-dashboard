@@ -11,30 +11,21 @@ const emailRegex =
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const Signin = () => {
-  const { user, loading, requestMagicLink, completeMagicLink, verifyPurchaseAndLogin } = useAuth();
+  const { user, loading, signIn, verifyPurchaseAndLogin } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
+  
   useEffect(() => {
     if (!loading && user) {
       navigate("/dashboard", { replace: true });
     }
   }, [user, loading, navigate]);
 
-
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [step, setStep] = useState<"request" | "verify">("request");
   const [verifyingPurchase, setVerifyingPurchase] = useState(false);
-
-  useEffect(() => {
-    const mode = searchParams.get("mode");
-    const emailParam = searchParams.get("email");
-    if (mode === "verify" && emailParam) {
-      setEmail(emailParam);
-      setStep("verify");
-    }
-  }, [searchParams]);
 
   // Handle purchase redirect from codeofmemory.com
   useEffect(() => {
@@ -76,57 +67,39 @@ const Signin = () => {
     }
   }, [searchParams, loading, user, verifyPurchaseAndLogin, navigate, toast]);
 
-  // Handle legacy auto-login (for magic links)
-  useEffect(() => {
-    const autoLogin = searchParams.get("autologin");
-    const emailParam = searchParams.get("email");
-    const purchaseToken = searchParams.get("purchase_token");
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
     
-    // Only run if there's no purchase token (purchase flow takes precedence)
-    if (!loading && !user && !purchaseToken && autoLogin === "1" && emailParam) {
-      (async () => {
-        try {
-          setSubmitting(true);
-          await completeMagicLink(emailParam);
-          toast({ title: "Signed in", description: `Welcome, ${emailParam}` });
-          navigate("/dashboard", { replace: true });
-        } catch {
-          toast({ title: "Error", description: "Auto-login failed." });
-        } finally {
-          setSubmitting(false);
-        }
-      })();
-    }
-  }, [searchParams, loading, user, completeMagicLink, navigate, toast]);
-
-  const handleRequest = async () => {
     if (!emailRegex.test(email)) {
       toast({ title: "Invalid email", description: "Please enter a valid email." });
       return;
     }
-    setSubmitting(true);
-    try {
-      await requestMagicLink(email);
-      toast({
-        title: "Check your inbox",
-        description: "We sent a sign-in link. Click it to continue.",
-      });
-      // For MVP, simulate immediate verify step
-      setStep("verify");
-    } catch {
-      toast({ title: "Error", description: "Could not send magic link. Try again." });
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
-  const handleComplete = async () => {
+    if (!password) {
+      toast({ title: "Password required", description: "Please enter your password." });
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await completeMagicLink(email);
-      toast({ title: "Signed in", description: "Welcome back!" });
-    } catch {
-      toast({ title: "Error", description: "Could not complete sign in. Try again." });
+      const result = await signIn(email, password);
+      
+      if (result.success) {
+        toast({ title: "Signed in", description: "Welcome back!" });
+        navigate("/dashboard", { replace: true });
+      } else {
+        toast({ 
+          title: "Sign in failed", 
+          description: result.error || "Invalid email or password. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      toast({ 
+        title: "Error", 
+        description: "An error occurred during sign in. Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setSubmitting(false);
     }
@@ -160,54 +133,49 @@ const Signin = () => {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
-          <CardDescription>Use your email to get a magic sign-in link.</CardDescription>
+          <CardDescription>Enter your email and password to sign in.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium" htmlFor="email">
-              Email
-            </label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          {step === "request" ? (
-            <Button className="w-full" disabled={submitting} onClick={handleRequest}>
-              {submitting ? "Sending..." : "Send magic link"}
+        <CardContent>
+          <form onSubmit={handleSignIn} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="email">
+                Email
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium" htmlFor="password">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={submitting}
+                required
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full" 
+              disabled={submitting}
+            >
+              {submitting ? "Signing in..." : "Sign in"}
             </Button>
-          ) : (
-            <Button className="w-full" disabled={submitting} onClick={handleComplete}>
-              {submitting ? "Signing in..." : "I clicked the link (continue)"}
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            disabled={submitting}
-            onClick={async () => {
-              try {
-                setSubmitting(true);
-                const demoEmail = "demo@codeofmemory.com";
-                await completeMagicLink(demoEmail);
-                toast({ title: "Signed in (demo)", description: `Welcome, ${demoEmail}` });
-                navigate("/dashboard", { replace: true });
-              } catch {
-                toast({ title: "Error", description: "Demo sign-in failed." });
-              } finally {
-                setSubmitting(false);
-              }
-            }}
-          >
-            Use demo account
-          </Button>
-          <p className="text-xs text-muted-foreground">
-            By continuing, you agree to our terms and privacy policy.
-          </p>
+            <p className="text-xs text-muted-foreground text-center">
+              By continuing, you agree to our terms and privacy policy.
+            </p>
+          </form>
         </CardContent>
       </Card>
     </div>

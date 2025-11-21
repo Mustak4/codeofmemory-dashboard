@@ -257,3 +257,26 @@
     color: black !important;
   }
 }
+
+/* Calendar dropdown styling */
+.rdp-dropdown {
+  appearance: none;
+  background: transparent;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  padding: 0.5rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.rdp-dropdown:hover {
+  background-color: hsl(var(--muted));
+  border-radius: 0.375rem;
+}
+
+.rdp-dropdown:focus {
+  background-color: hsl(var(--muted));
+  border-radius: 0.375rem;
+}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+
+type GuestBookEntry = {
+  id: string;
+  guest_name: string;
+  message: string;
+  status: "pending" | "approved" | "rejected";
+  created_at: string;
+};
 
 type MemorialDetailData = {
   id: string;
@@ -29,50 +39,161 @@ type MemorialDetailData = {
   heroUrl?: string;
 };
 
-const useMockMemorialById = (id: string | undefined): MemorialDetailData | null => {
-  const all = useMemo<MemorialDetailData[]>(
-    () => [
-      {
-        id: "mem-1",
-        name: "Maria Lopez",
-        slug: "maria-lopez",
-        dateOfBirth: "1991-03-22",
-        dateOfDeath: "2022-11-09",
-        status: "draft",
-        biographyHtml:
-          "<p>Maria was a devoted friend and an inspiring mentor. She loved gardening, Sunday dinners with family, and capturing small moments with her camera.</p><p>Her story is one of kindness, perseverance, and joy shared generously with everyone she met.</p>",
-        gallery: [
-          { id: "g1", url: "/placeholder.svg", alt: "Maria in the garden" },
-          { id: "g2", url: "/placeholder.svg", alt: "Family dinner" },
-          { id: "g3", url: "/placeholder.svg", alt: "Maria with camera" },
-        ],
-        family: {
-          parents: ["Lucia Alvarez", "Jorge Lopez"],
-          spouses: ["Carlos Ramirez"],
-          children: ["Ana Lopez", "Diego Lopez"],
-          siblings: ["Isabella Cruz", "Miguel Lopez"],
-          grandchildren: "5 grandchildren",
-        },
-        avatarUrl: "/marialopez.png",
-        heroUrl: "/src/assets/hero-background.jpg",
-      },
-    ],
-    [],
-  );
-
-  if (!id) return null;
-  return all.find((m) => m.id === id) ?? null;
-};
 
 const MemorialDetail = () => {
-  const params = useParams();
+  const params = useParams<{ id?: string; slug?: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
 
-  const memorial = useMockMemorialById(params.id);
+  const [memorial, setMemorial] = useState<MemorialDetailData | null>(null);
+  const [loading, setLoading] = useState(true);
   const [guestName, setGuestName] = useState("");
   const [guestMessage, setGuestMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [guestBookEntries, setGuestBookEntries] = useState<GuestBookEntry[]>([]);
+
+  useEffect(() => {
+    const loadMemorial = async () => {
+      if (!params.id && !params.slug) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        let query = supabase.from("memorials").select("*");
+
+        // Check if the param looks like a UUID (ID) or a slug
+        const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          params.id || params.slug || ""
+        );
+
+        if (params.id || (params.slug && isUUID)) {
+          // If we have an ID (or slug that's actually a UUID), use it
+          const id = params.id || params.slug;
+          query = query.eq("id", id);
+          // If user is authenticated, they can view their own drafts
+          if (user) {
+            query = query.or(`user_id.eq.${user.id},status.eq.published`);
+          } else {
+            query = query.eq("status", "published");
+          }
+        } else if (params.slug) {
+          // If we have a slug (not a UUID), use it for public access
+          query = query.eq("slug", params.slug).eq("status", "published");
+        }
+
+        const { data, error } = await query.single();
+
+        if (error) throw error;
+
+        if (data) {
+          // Load gallery items
+          const { data: galleryData } = await supabase
+            .from("gallery_items")
+            .select("*")
+            .eq("memorial_id", data.id)
+            .order("order", { ascending: true });
+
+          // Load family members
+          const { data: familyData } = await supabase
+            .from("family_members")
+            .select("*")
+            .eq("memorial_id", data.id);
+
+          // Load approved guestbook entries
+          const { data: guestbookData } = await supabase
+            .from("guestbook_entries")
+            .select("*")
+            .eq("memorial_id", data.id)
+            .eq("status", "approved")
+            .order("created_at", { ascending: false });
+
+          if (guestbookData) {
+            setGuestBookEntries(guestbookData);
+          }
+
+          // Transform family members into grouped format
+          const familyMembers = (familyData || []).reduce(
+            (acc, member) => {
+              const name = member.name;
+              switch (member.relationship) {
+                case "parent":
+                  acc.parents = acc.parents || [];
+                  acc.parents.push(name);
+                  break;
+                case "spouse":
+                  acc.spouses = acc.spouses || [];
+                  acc.spouses.push(name);
+                  break;
+                case "child":
+                  acc.children = acc.children || [];
+                  acc.children.push(name);
+                  break;
+                case "sibling":
+                  acc.siblings = acc.siblings || [];
+                  acc.siblings.push(name);
+                  break;
+                case "grandchild":
+                  acc.grandchildren = acc.grandchildren || [];
+                  acc.grandchildren.push(name);
+                  break;
+              }
+              return acc;
+            },
+            {} as {
+              parents?: string[];
+              spouses?: string[];
+              children?: string[];
+              siblings?: string[];
+              grandchildren?: string[];
+            }
+          );
+
+          setMemorial({
+            id: data.id,
+            name: data.name || "",
+            slug: data.slug || "",
+            dateOfBirth: data.date_of_birth || "",
+            dateOfDeath: data.date_of_death || "",
+            status: data.status || "draft",
+            biographyHtml: data.biography_html || "",
+            heroUrl: data.hero_url || undefined,
+            avatarUrl: data.avatar_url || undefined,
+            gallery: (galleryData || []).map((item) => ({
+              id: item.id,
+              url: item.url,
+              alt: item.alt || "",
+            })),
+            family: Object.keys(familyMembers).length > 0 ? familyMembers : undefined,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading memorial:", error);
+        // Don't show error toast for public access - just show not found
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMemorial();
+  }, [params.id, params.slug, user]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen p-6">
+        <div className="mx-auto max-w-4xl">
+          <Card>
+            <CardHeader>
+              <CardTitle>Loading...</CardTitle>
+              <CardDescription>Loading memorial...</CardDescription>
+            </CardHeader>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (!memorial) {
     return (
@@ -81,10 +202,18 @@ const MemorialDetail = () => {
           <Card>
             <CardHeader>
               <CardTitle>Memorial not found</CardTitle>
-              <CardDescription>The memorial you are looking for does not exist.</CardDescription>
+              <CardDescription>
+                {params.slug 
+                  ? "This memorial does not exist or is not published yet." 
+                  : "The memorial you are looking for does not exist."}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => navigate("/dashboard")}>Back to dashboard</Button>
+              {user ? (
+                <Button onClick={() => navigate("/dashboard")}>Back to dashboard</Button>
+              ) : (
+                <Button onClick={() => navigate("/signin")}>Sign in</Button>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -130,19 +259,11 @@ const MemorialDetail = () => {
             ) : (
               <Badge variant="secondary">Draft</Badge>
             )}
-            <Button variant="outline" onClick={() => navigate(`/memorial/${memorial.id}/edit`)}>
-              Edit memorial
-            </Button>
-            <Button
-              onClick={() =>
-                toast({
-                  title: "Publish flow",
-                  description: "Publishing controls will be added soon.",
-                })
-              }
-            >
-              Publish
-            </Button>
+            {user && (
+              <Button variant="outline" onClick={() => navigate(`/memorial/${memorial.id}/edit`)}>
+                Edit memorial
+              </Button>
+            )}
           </div>
         </div>
 
@@ -164,9 +285,11 @@ const MemorialDetail = () => {
                 </CardHeader>
                 <CardContent>
                   <div
-                    className="prose prose-neutral max-w-none dark:prose-invert"
-                    dangerouslySetInnerHTML={{ __html: memorial.biographyHtml }}
-                  />
+                    className="prose prose-neutral max-w-none dark:prose-invert whitespace-pre-wrap"
+                    style={{ whiteSpace: "pre-wrap" }}
+                  >
+                    {memorial.biographyHtml || "No biography added yet."}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
@@ -279,57 +402,123 @@ const MemorialDetail = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Guest Book</CardTitle>
-                  <CardDescription>Share a memory or message. Entries are publicly visible after approval.</CardDescription>
+                  <CardDescription>Messages and memories shared by visitors.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium" htmlFor="guest-name">
-                        Your name
-                      </label>
-                      <Input
-                        id="guest-name"
-                        placeholder="Name"
-                        value={guestName}
-                        onChange={(e) => setGuestName(e.target.value)}
-                      />
+                <CardContent className="space-y-6">
+                  {/* Display approved entries */}
+                  {guestBookEntries.length > 0 ? (
+                    <div className="space-y-4">
+                      {guestBookEntries.map((entry) => (
+                        <div key={entry.id} className="rounded-lg border bg-background p-4">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <p className="font-medium text-sm">{entry.guest_name}</p>
+                                <span className="text-xs text-muted-foreground">•</span>
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(entry.created_at).toLocaleDateString(undefined, {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}
+                                </p>
+                              </div>
+                              <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+                                {entry.message}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="space-y-2 sm:col-span-2">
-                      <label className="text-sm font-medium" htmlFor="guest-message">
-                        Message
-                      </label>
-                      <Textarea
-                        id="guest-message"
-                        placeholder="A favorite story, a message to the family, or how they impacted you."
-                        rows={5}
-                        value={guestMessage}
-                        onChange={(e) => setGuestMessage(e.target.value)}
-                      />
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-sm text-muted-foreground">No messages yet. Be the first to share a memory.</p>
                     </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
-                      Protected by rate-limiting and moderation. Media uploads coming soon.
-                    </p>
-                    <Button
-                      disabled={submitting || guestName.trim() === "" || guestMessage.trim() === ""}
-                      onClick={async () => {
-                        try {
-                          setSubmitting(true);
-                          await new Promise((r) => setTimeout(r, 600));
-                          setGuestName("");
-                          setGuestMessage("");
-                          toast({
-                            title: "Submitted",
-                            description: "Your entry is awaiting approval by the memorial owner.",
-                          });
-                        } finally {
-                          setSubmitting(false);
-                        }
-                      }}
-                    >
-                      {submitting ? "Submitting..." : "Submit entry"}
-                    </Button>
+                  )}
+
+                  {/* Separator */}
+                  {guestBookEntries.length > 0 && (
+                    <Separator className="my-6" />
+                  )}
+
+                  {/* Submission form */}
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Add a message</h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Share a memory or message. Entries are publicly visible after approval.
+                      </p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium" htmlFor="guest-name">
+                          Your name
+                        </label>
+                        <Input
+                          id="guest-name"
+                          placeholder="Name"
+                          value={guestName}
+                          onChange={(e) => setGuestName(e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2 sm:col-span-2">
+                        <label className="text-sm font-medium" htmlFor="guest-message">
+                          Message
+                        </label>
+                        <Textarea
+                          id="guest-message"
+                          placeholder="A favorite story, a message to the family, or how they impacted you."
+                          rows={5}
+                          value={guestMessage}
+                          onChange={(e) => setGuestMessage(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">
+                        Protected by rate-limiting and moderation. Media uploads coming soon.
+                      </p>
+                      <Button
+                        disabled={submitting || guestName.trim() === "" || guestMessage.trim() === ""}
+                        onClick={async () => {
+                          if (!memorial) return;
+                          
+                          try {
+                            setSubmitting(true);
+                            
+                            const { error } = await supabase
+                              .from("guestbook_entries")
+                              .insert({
+                                memorial_id: memorial.id,
+                                guest_name: guestName.trim(),
+                                message: guestMessage.trim(),
+                                status: "pending",
+                              });
+
+                            if (error) throw error;
+
+                            setGuestName("");
+                            setGuestMessage("");
+                            toast({
+                              title: "Submitted",
+                              description: "Your entry is awaiting approval by the memorial owner.",
+                            });
+                          } catch (error) {
+                            console.error("Error submitting guest book entry:", error);
+                            toast({
+                              title: "Error",
+                              description: "Failed to submit entry. Please try again.",
+                              variant: "destructive",
+                            });
+                          } finally {
+                            setSubmitting(false);
+                          }
+                        }}
+                      >
+                        {submitting ? "Submitting..." : "Submit entry"}
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

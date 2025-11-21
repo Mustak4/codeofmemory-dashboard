@@ -153,6 +153,10 @@
     {
       "source": "/sitemap.xml",
       "destination": "/sitemap.xml"
+    },
+    {
+      "source": "/((?!api|_next|assets|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }

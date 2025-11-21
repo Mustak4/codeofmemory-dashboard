@@ -7,35 +7,13 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-// Example memorial data
+// Memorial data will be fetched from Supabase based on slug/ID
 const memorialData = {
-  name: "Eleanor Rose Thompson",
-  birthDate: "March 15, 1945",
-  deathDate: "November 2, 2024",
-  biography: `Eleanor was a devoted mother, grandmother, and friend whose warmth touched everyone she met. 
-  She spent her life teaching elementary school, where generations of children learned not just reading and math, 
-  but also kindness and compassion. Her garden was her sanctuary, and she loved sharing its beauty with neighbors 
-  and friends. Eleanor's laughter was infectious, her wisdom gentle, and her love unconditional.`,
-  memories: [
-    {
-      id: 1,
-      author: "Sarah Thompson",
-      date: "November 5, 2024",
-      text: "Mom taught me that the smallest acts of kindness matter most. I'll never forget the way she'd leave notes in our lunchboxes every single day.",
-    },
-    {
-      id: 2,
-      author: "Michael Chen",
-      date: "November 6, 2024",
-      text: "Mrs. Thompson was my third grade teacher. She believed in me when no one else did. Her encouragement changed my life.",
-    },
-    {
-      id: 3,
-      author: "Grace Williams",
-      date: "November 8, 2024",
-      text: "Eleanor's garden was a masterpiece. She'd invite the neighborhood kids to help plant flowers every spring. Those are memories I'll treasure forever.",
-    },
-  ],
+  name: "",
+  birthDate: "",
+  deathDate: "",
+  biography: "",
+  memories: [] as Array<{ id: number; author: string; date: string; text: string }>,
 };
 
 const Memorial = () => {
@@ -91,19 +69,25 @@ const Memorial = () => {
           </h2>
 
           <div className="space-y-6 mb-8">
-            {memorialData.memories.map((memory, index) => (
-              <Card
-                key={memory.id}
-                className="p-6 border-border/50 hover:shadow-md transition-all duration-300 bg-card/50 backdrop-blur-sm"
-                style={{ animationDelay: `${(index + 1) * 100}ms` }}
-              >
-                <div className="flex justify-between items-start mb-3">
-                  <p className="font-medium text-memory">{memory.author}</p>
-                  <p className="text-sm text-muted-foreground">{memory.date}</p>
-                </div>
-                <p className="text-foreground leading-relaxed">{memory.text}</p>
+            {memorialData.memories.length === 0 ? (
+              <Card className="p-6 border-border/50 bg-card/50 backdrop-blur-sm">
+                <p className="text-muted-foreground text-center">No memories shared yet.</p>
               </Card>
-            ))}
+            ) : (
+              memorialData.memories.map((memory, index) => (
+                <Card
+                  key={memory.id}
+                  className="p-6 border-border/50 hover:shadow-md transition-all duration-300 bg-card/50 backdrop-blur-sm"
+                  style={{ animationDelay: `${(index + 1) * 100}ms` }}
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <p className="font-medium text-memory">{memory.author}</p>
+                    <p className="text-sm text-muted-foreground">{memory.date}</p>
+                  </div>
+                  <p className="text-foreground leading-relaxed">{memory.text}</p>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Add Memory Form */}

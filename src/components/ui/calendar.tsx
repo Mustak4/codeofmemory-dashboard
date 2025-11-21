@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,8 +16,12 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
-        caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        caption: "flex justify-center pt-1 relative items-center gap-3",
+        caption_label: "text-sm font-medium hidden",
+        caption_dropdowns: "flex justify-center gap-3 items-center",
+        dropdown: "h-8 rounded-md border-0 bg-transparent px-2 text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-0 cursor-pointer",
+        dropdown_month: "h-8 rounded-md border-0 bg-transparent px-2 text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-0 cursor-pointer",
+        dropdown_year: "h-8 rounded-md border-0 bg-transparent px-2 text-sm font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-0 cursor-pointer",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
@@ -33,7 +38,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_range_end: "day-range-end",
         day_selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        day_today: "bg-accent text-accent-foreground",
+        day_today: "",
         day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
         day_disabled: "text-muted-foreground opacity-50",
