@@ -18,6 +18,7 @@ import { AlertCircle, CalendarIcon, Upload, Loader2, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import imageCompression from "browser-image-compression";
 
 type Submission = {
   id: string;
@@ -228,6 +229,35 @@ const MemorialProfileEditor = () => {
       .substring(0, 50); // Limit length
   };
 
+  // Compress image while maintaining visual quality
+  const compressImage = async (file: File): Promise<File> => {
+    try {
+      const options = {
+        maxSizeMB: 2, // Target file size (but quality takes priority)
+        maxWidthOrHeight: 1920, // Maximum dimension
+        useWebWorker: true, // Use web worker for better performance
+        fileType: file.type, // Keep original format
+        initialQuality: 0.9, // High quality (90%) to maintain visual appearance
+        alwaysKeepResolution: false, // Allow resizing if needed
+      };
+
+      const compressedFile = await imageCompression(file, options);
+      
+      // Log compression stats
+      const originalSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      const compressedSizeMB = (compressedFile.size / (1024 * 1024)).toFixed(2);
+      const reduction = ((1 - compressedFile.size / file.size) * 100).toFixed(1);
+      
+      console.log(`Image compressed: ${originalSizeMB}MB → ${compressedSizeMB}MB (${reduction}% reduction)`);
+      
+      return compressedFile;
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      // If compression fails, return original file
+      return file;
+    }
+  };
+
   // Upload image or video to Supabase Storage with organized folder structure
   const uploadImage = async (
     file: File,
@@ -255,7 +285,7 @@ const MemorialProfileEditor = () => {
       return null;
     }
 
-    // Validate file size (max 50MB for videos, 5MB for images)
+    // Validate file size (max 50MB for videos, 5MB for images before compression)
     const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
     if (file.size > maxSize) {
       toast({
@@ -269,6 +299,12 @@ const MemorialProfileEditor = () => {
     }
 
     try {
+      // Compress images before upload (videos are uploaded as-is)
+      let fileToUpload = file;
+      if (isImage) {
+        fileToUpload = await compressImage(file);
+      }
+
       // Get folder name from memorial name (e.g., "Kristian")
       const memorialFolder = getMemorialFolderName(form.name);
       
@@ -289,7 +325,7 @@ const MemorialProfileEditor = () => {
       }
       
       // Create a unique filename
-      const fileExt = file.name.split(".").pop();
+      const fileExt = fileToUpload.name.split(".").pop();
       const timestamp = Date.now();
       const fileName = type === "hero" 
         ? `hero-${timestamp}.${fileExt}`
@@ -304,7 +340,7 @@ const MemorialProfileEditor = () => {
       // Upload to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from("memorial-images")
-        .upload(filePath, file, {
+        .upload(filePath, fileToUpload, {
           cacheControl: "3600",
           upsert: false,
         });

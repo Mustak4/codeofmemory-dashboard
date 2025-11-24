@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import LazyImage from "@/components/LazyImage";
 
 type GuestBookEntry = {
   id: string;
@@ -48,6 +49,7 @@ const MemorialDetail = () => {
 
   const [memorial, setMemorial] = useState<MemorialDetailData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingGallery, setLoadingGallery] = useState(true);
   const [guestName, setGuestName] = useState("");
   const [guestMessage, setGuestMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -89,33 +91,51 @@ const MemorialDetail = () => {
         if (error) throw error;
 
         if (data) {
-          // Load gallery items
-          const { data: galleryData } = await supabase
-            .from("gallery_items")
-            .select("*")
-            .eq("memorial_id", data.id)
-            .order("order", { ascending: true });
+          // Set basic memorial data first for faster initial render
+          setMemorial({
+            id: data.id,
+            name: data.name || "",
+            slug: data.slug || "",
+            dateOfBirth: data.date_of_birth || "",
+            dateOfDeath: data.date_of_death || "",
+            status: data.status || "draft",
+            biographyHtml: data.biography_html || "",
+            heroUrl: data.hero_url || undefined,
+            avatarUrl: data.avatar_url || undefined,
+            gallery: [],
+            family: undefined,
+          });
+          
+          // Mark main loading as complete so page can render
+          setLoading(false);
 
-          // Load family members
-          const { data: familyData } = await supabase
-            .from("family_members")
-            .select("*")
-            .eq("memorial_id", data.id);
+          // Load all related data in parallel for better performance
+          const [galleryResult, familyResult, guestbookResult] = await Promise.all([
+            supabase
+              .from("gallery_items")
+              .select("*")
+              .eq("memorial_id", data.id)
+              .order("order", { ascending: true }),
+            supabase
+              .from("family_members")
+              .select("*")
+              .eq("memorial_id", data.id),
+            supabase
+              .from("guestbook_entries")
+              .select("*")
+              .eq("memorial_id", data.id)
+              .eq("status", "approved")
+              .order("created_at", { ascending: false })
+          ]);
 
-          // Load approved guestbook entries
-          const { data: guestbookData } = await supabase
-            .from("guestbook_entries")
-            .select("*")
-            .eq("memorial_id", data.id)
-            .eq("status", "approved")
-            .order("created_at", { ascending: false });
+          setLoadingGallery(false);
 
-          if (guestbookData) {
-            setGuestBookEntries(guestbookData);
+          if (guestbookResult.data) {
+            setGuestBookEntries(guestbookResult.data);
           }
 
           // Transform family members into grouped format
-          const familyMembers = (familyData || []).reduce(
+          const familyMembers = (familyResult.data || []).reduce(
             (acc, member) => {
               const name = member.name;
               switch (member.relationship) {
@@ -151,29 +171,38 @@ const MemorialDetail = () => {
             }
           );
 
-          setMemorial({
-            id: data.id,
-            name: data.name || "",
-            slug: data.slug || "",
-            dateOfBirth: data.date_of_birth || "",
-            dateOfDeath: data.date_of_death || "",
-            status: data.status || "draft",
-            biographyHtml: data.biography_html || "",
-            heroUrl: data.hero_url || undefined,
-            avatarUrl: data.avatar_url || undefined,
-            gallery: (galleryData || []).map((item) => ({
-              id: item.id,
-              url: item.url,
-              alt: item.alt || "",
-            })),
-            family: Object.keys(familyMembers).length > 0 ? familyMembers : undefined,
+          // Update memorial with full data
+          setMemorial((prev) => {
+            if (!prev) return null;
+            
+            const updated = {
+              ...prev,
+              gallery: (galleryResult.data || []).map((item) => ({
+                id: item.id,
+                url: item.url,
+                alt: item.alt || "",
+              })),
+              family: Object.keys(familyMembers).length > 0 ? familyMembers : undefined,
+            };
+            
+            // Preload hero and avatar images for faster display
+            if (updated.heroUrl) {
+              const heroImg = new Image();
+              heroImg.src = updated.heroUrl;
+            }
+            if (updated.avatarUrl) {
+              const avatarImg = new Image();
+              avatarImg.src = updated.avatarUrl;
+            }
+            
+            return updated;
           });
         }
       } catch (error) {
         console.error("Error loading memorial:", error);
         // Don't show error toast for public access - just show not found
-      } finally {
         setLoading(false);
+        setLoadingGallery(false);
       }
     };
 
@@ -229,14 +258,24 @@ const MemorialDetail = () => {
       {/* Hero */}
       <div className="relative h-56 w-full overflow-visible rounded-b-3xl border-b bg-muted/40">
         {memorial.heroUrl ? (
-          <img src={memorial.heroUrl} alt="" className="h-full w-full object-cover" />
+          <LazyImage 
+            src={memorial.heroUrl} 
+            alt="" 
+            className="h-full w-full object-cover" 
+            priority={true}
+          />
         ) : (
           <div className="h-full w-full bg-gradient-to-b from-muted to-background" />
         )}
         {/* Circular avatar positioned over the cover */}
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 z-10">
           <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-background shadow-md sm:h-32 sm:w-32">
-            <img src={memorial.avatarUrl ?? "/logo.png"} alt={memorial.name} className="h-full w-full object-cover" />
+            <LazyImage 
+              src={memorial.avatarUrl ?? "/logo.png"} 
+              alt={memorial.name} 
+              className="h-full w-full object-cover" 
+              priority={true}
+            />
           </div>
         </div>
       </div>
@@ -311,7 +350,11 @@ const MemorialDetail = () => {
                           className="group overflow-hidden rounded-xl border bg-background"
                           onClick={() => toast({ title: "Lightbox", description: "Opens full-screen viewer (soon)" })}
                         >
-                          <img src={img.url} alt={img.alt} className="h-44 w-full object-cover transition group-hover:scale-105" />
+                          <LazyImage 
+                            src={img.url} 
+                            alt={img.alt} 
+                            className="h-44 w-full object-cover transition group-hover:scale-105" 
+                          />
                           <p className="truncate px-3 py-2 text-xs text-muted-foreground">{img.alt}</p>
                         </button>
                       ))}
