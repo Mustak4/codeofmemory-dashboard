@@ -17,6 +17,7 @@ const Header = () => {
   const { language, t } = useLanguage();
 
   const basePath = removeLanguageFromPath(location.pathname);
+  const currentLanguageConfig = languages.find((lang) => lang.code === language);
 
   const navLinks = [
     { path: "/", key: "home" },
@@ -75,25 +76,31 @@ const Header = () => {
                     variant="outline"
                     size="sm"
                     className="bg-background hover:bg-muted/50 text-sm font-medium border border-border/50"
+                    aria-label={`Switch language (current: ${currentLanguageConfig?.name || "English"})`}
                   >
                     <span className="flex items-center gap-1.5">
-                      {languages.find(lang => lang.code === language)?.code.toUpperCase() || 'EN'}
+                      <span role="img" aria-label={`${currentLanguageConfig?.name || "English"} flag`} className="text-base leading-none">
+                        {currentLanguageConfig?.flag || "🌐"}
+                      </span>
                       <ChevronDown className="w-3 h-3" />
                     </span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="min-w-[100px]">
+                <DropdownMenuContent align="end" className="min-w-[50px] p-1">
                   {languages.map((lang) => {
                     const localizedPath = getLocalizedPath(basePath, lang.code);
                     return (
                       <DropdownMenuItem key={lang.code} asChild>
                         <Link
                           to={localizedPath}
-                          className={`cursor-pointer ${
+                          className={`cursor-pointer flex items-center justify-center w-10 h-9 rounded-md transition-colors ${
                             language === lang.code ? "bg-muted font-medium" : ""
                           }`}
+                          aria-label={`Switch to ${lang.name}`}
                         >
-                          {lang.code.toUpperCase()}
+                          <span role="img" aria-hidden="true" className="text-lg leading-none">
+                            {lang.flag}
+                          </span>
                         </Link>
                       </DropdownMenuItem>
                     );
@@ -153,14 +160,16 @@ const Header = () => {
                       key={lang.code}
                       to={localizedPath}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`text-xs transition-colors px-3 py-1.5 rounded-md font-medium ${
+                      className={`text-base transition-colors w-12 h-10 flex items-center justify-center rounded-lg ${
                         language === lang.code
                           ? "text-memory bg-muted"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                       }`}
                       aria-label={`Switch to ${lang.name}`}
                     >
-                      {lang.code.toUpperCase()}
+                      <span role="img" aria-hidden="true">
+                        {lang.flag}
+                      </span>
                     </Link>
                   );
                 })}

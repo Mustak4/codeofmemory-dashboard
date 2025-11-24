@@ -1,10 +1,10 @@
 export type Language = "en" | "de" | "sv" | "no";
 
-export const languages: { code: Language; name: string; hreflang: string; urlPrefix: string }[] = [
-  { code: "en", name: "English", hreflang: "en", urlPrefix: "/en" },
-  { code: "de", name: "Deutsch", hreflang: "de", urlPrefix: "/de" },
-  { code: "sv", name: "Svenska", hreflang: "sv", urlPrefix: "/sv" },
-  { code: "no", name: "Norsk", hreflang: "no", urlPrefix: "/no" },
+export const languages: { code: Language; name: string; hreflang: string; urlPrefix: string; flag: string }[] = [
+  { code: "en", name: "English", hreflang: "en", urlPrefix: "/en", flag: "🇬🇧" },
+  { code: "de", name: "Deutsch", hreflang: "de", urlPrefix: "/de", flag: "🇩🇪" },
+  { code: "sv", name: "Svenska", hreflang: "sv", urlPrefix: "/sv", flag: "🇸🇪" },
+  { code: "no", name: "Norsk", hreflang: "no", urlPrefix: "/no", flag: "🇳🇴" },
 ];
 
 export const defaultLanguage: Language = "en";

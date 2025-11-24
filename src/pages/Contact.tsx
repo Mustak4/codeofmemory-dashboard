@@ -210,12 +210,6 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-earth mt-1" aria-hidden="true" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Address</p>
-                  </div>
-                </div>
               </div>
             </Card>
 
