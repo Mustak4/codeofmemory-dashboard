@@ -1,14 +1,21 @@
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getLocalizedPath } from "@/i18n/config";
 import { Mail, Phone, Facebook, Instagram, Twitter } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Footer = () => {
+  const { language, t } = useLanguage();
+  const { user } = useAuth();
+  
   return (
     <footer className="border-t border-border/50 bg-muted/20">
       <div className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Brand */}
           <div>
-            <Link to="/" className="flex items-center mb-4 group">
+            <Link to={getLocalizedPath("/", language)} className="flex items-center mb-4 group">
               <img 
                 src="/logo.png" 
                 alt="CodeOfMemory" 
@@ -19,9 +26,19 @@ const Footer = () => {
                 decoding="async"
               />
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               Preserving memories with dignity through technology and love.
             </p>
+            <div className="flex flex-col gap-2">
+              {!user ? (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/signin">{t("common.login")}</Link>
+                </Button>
+              ) : null}
+              <Button variant="default" size="sm" asChild className="bg-memory text-warmth hover:bg-memory/90">
+                <Link to="/create-memorial">{t("common.createMemorial")}</Link>
+              </Button>
+            </div>
           </div>
 
           {/* Company */}
@@ -29,17 +46,17 @@ const Footer = () => {
             <h3 className="font-serif text-memory mb-4">Company</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/reviews" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/reviews", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Reviews
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/blog", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/contact", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Contact
                 </Link>
               </li>
@@ -51,24 +68,24 @@ const Footer = () => {
             <h3 className="font-serif text-memory mb-4">Support</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/faq" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/faq", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/order" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/order-process", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Order Process
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/privacy", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-muted-foreground hover:text-memory transition-colors">
+                <Link to={getLocalizedPath("/terms", language)} className="text-sm text-muted-foreground hover:text-memory transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -86,7 +103,7 @@ const Footer = () => {
               <li className="flex items-start gap-2 text-sm">
                 <Phone className="w-4 h-4 text-earth mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <a href="tel:+447741453154" className="text-muted-foreground hover:text-memory transition-colors">
-                  07741453154
+                  +44 7741453154
                 </a>
               </li>
             </ul>

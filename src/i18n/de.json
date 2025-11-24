@@ -15,7 +15,8 @@
     "getInTouch": "Kontakt aufnehmen",
     "or": "oder",
     "visit": "besuchen Sie unsere",
-    "forAnswers": "für Antworten"
+    "forAnswers": "für Antworten",
+    "login": "Anmelden"
   },
   "home": {
     "heroTitle": "Scannen. Erinnern. Für immer.",
@@ -252,11 +253,72 @@
   "reviews": {
     "title": "Kundenbewertungen",
     "subtitle": "Geschichten von Familien, die CodeOfMemory ihre wertvollsten Erinnerungen anvertraut haben.",
+    "pageTitle": "Geschichten von Familien",
+    "pageSubtitle": "Hören Sie von denen, die uns ihre wertvollsten Erinnerungen anvertraut haben.",
     "rating": "Bewertung",
     "readHowItWorks": "Lesen Sie, wie es funktioniert",
     "averageRating": "Durchschnittliche Bewertung",
     "totalReviews": "Gesamtbewertungen",
-    "inMemoryOf": "Zum Gedenken an"
+    "inMemoryOf": "Zum Gedenken an",
+    "outOf5": "von 5",
+    "basedOn": "Basierend auf",
+    "review": "Bewertung",
+    "reviews": "Bewertungen",
+    "noReviews": "Noch keine Bewertungen verfügbar.",
+    "readyToCreate": "Bereit, Ihr Denkmal zu erstellen?",
+    "joinFamilies": "Schließen Sie sich den Familien an, die uns vertrauen, ihre wertvollsten Erinnerungen zu bewahren.",
+    "startTribute": "Starten Sie Ihre Hommage",
+    "contactUs": "Kontaktieren Sie uns",
+    "reviewList": [
+      {
+        "id": 1,
+        "name": "Sarah Mitchell",
+        "location": "London, UK",
+        "date": "Dezember 2024",
+        "text": "Die Erstellung eines digitalen Denkmals für meinen Vater war eine der bedeutungsvollsten Dinge, die wir getan haben. Die QR-Code-Plakette ermöglicht es Familie und Freunden aus der ganzen Welt, Erinnerungen und Geschichten zu teilen. Der Prozess war einfach, und das Support-Team war durchweg unglaublich einfühlsam.",
+        "memorial": "James Mitchell"
+      },
+      {
+        "id": 2,
+        "name": "Michael Chen",
+        "location": "Manchester, UK",
+        "date": "November 2024",
+        "text": "Wir haben die Schieferplakette für das Denkmal meiner Großmutter gewählt, und sie ist absolut wunderschön. Der QR-Code ist perfekt graviert, und die Gedenkseite erfasst ihre Lebensgeschichte so gut. Sie ist zu einem Ort geworden, an dem unsere gesamte Familie zusammenkommen kann, um an sie zu erinnern.",
+        "memorial": "Li Chen"
+      },
+      {
+        "id": 3,
+        "name": "Emma Thompson",
+        "location": "Edinburgh, Schottland",
+        "date": "Oktober 2024",
+        "text": "Die Acrylplakette, die wir bestellt haben, ist atemberaubend. Sie steht wunderschön am Gedenkort, und Besucher können den QR-Code leicht scannen, um mehr über das Leben meiner Mutter zu erfahren. Die Gedenkseite enthält Fotos, Geschichten und Nachrichten von Freunden - es ist wie eine lebendige Hommage, die für immer bestehen wird.",
+        "memorial": "Margaret Thompson"
+      },
+      {
+        "id": 4,
+        "name": "David Williams",
+        "location": "Birmingham, UK",
+        "date": "September 2024",
+        "text": "Ich war zunächst skeptisch gegenüber einem digitalen Denkmal, aber es war wunderbar. Die Gedenkseite meines Bruders ist zu einem Treffpunkt für uns alle geworden, um Erinnerungen, Fotos und Geschichten zu teilen. Die Plexiglasplakette ist modern und elegant - genau das, was er gewollt hätte.",
+        "memorial": "Robert Williams"
+      },
+      {
+        "id": 5,
+        "name": "Jennifer Brown",
+        "location": "Leeds, UK",
+        "date": "August 2024",
+        "text": "Das Team von CodeOfMemory hat den gesamten Prozess in einer so schwierigen Zeit so einfach gemacht. Die Gedenkseite ist wunderschön, und die Qualität der Plakette ist außergewöhnlich. Freunde und Familie lieben es, die Gedenkseite jederzeit besuchen und Nachrichten hinterlassen zu können.",
+        "memorial": "Patricia Brown"
+      },
+      {
+        "id": 6,
+        "name": "Robert Taylor",
+        "location": "Glasgow, Schottland",
+        "date": "Juli 2024",
+        "text": "Wir haben die goldene Acrylplakette für das Denkmal meiner Frau bestellt, und sie ist absolut perfekt. Die Gedenkseite erzählt ihre Geschichte wunderschön mit Fotos und Erinnerungen aus unseren 40 Jahren zusammen. Es ist ein Trost zu wissen, dass ihre Erinnerung auf diese Weise bewahrt wird.",
+        "memorial": "Catherine Taylor"
+      }
+    ]
   },
   "notFound": {
     "title": "Seite nicht gefunden",

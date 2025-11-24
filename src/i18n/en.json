@@ -15,7 +15,8 @@
     "getInTouch": "Get in Touch",
     "or": "or",
     "visit": "visit our",
-    "forAnswers": "for answers"
+    "forAnswers": "for answers",
+    "login": "Login"
   },
   "home": {
     "heroTitle": "Scan. Remember. Forever.",
@@ -243,11 +244,72 @@
   "reviews": {
     "title": "Customer Reviews",
     "subtitle": "Stories from families who've trusted CodeOfMemory with their most precious memories.",
+    "pageTitle": "Stories from Families",
+    "pageSubtitle": "Hear from those who've trusted us with their most precious memories.",
     "rating": "Rating",
     "readHowItWorks": "Read how it works",
     "averageRating": "Average Rating",
     "totalReviews": "Total Reviews",
-    "inMemoryOf": "In memory of"
+    "inMemoryOf": "In memory of",
+    "outOf5": "out of 5",
+    "basedOn": "Based on",
+    "review": "review",
+    "reviews": "reviews",
+    "noReviews": "No reviews available yet.",
+    "readyToCreate": "Ready to Create Your Memorial?",
+    "joinFamilies": "Join the families who trust us to preserve their most precious memories.",
+    "startTribute": "Start Your Tribute",
+    "contactUs": "Contact Us",
+    "reviewList": [
+      {
+        "id": 1,
+        "name": "Sarah Mitchell",
+        "location": "London, UK",
+        "date": "December 2024",
+        "text": "Creating a digital memorial for my father was one of the most meaningful things we've done. The QR code plaque allows family and friends from around the world to share memories and stories. The process was simple, and the support team was incredibly compassionate throughout.",
+        "memorial": "James Mitchell"
+      },
+      {
+        "id": 2,
+        "name": "Michael Chen",
+        "location": "Manchester, UK",
+        "date": "November 2024",
+        "text": "We chose the slate plaque for my grandmother's memorial, and it's absolutely beautiful. The QR code is perfectly engraved, and the memorial page captures her life story so well. It's become a place where our entire family can come together to remember her.",
+        "memorial": "Li Chen"
+      },
+      {
+        "id": 3,
+        "name": "Emma Thompson",
+        "location": "Edinburgh, Scotland",
+        "date": "October 2024",
+        "text": "The acrylic plaque we ordered is stunning. It sits beautifully at the memorial site, and visitors can easily scan the QR code to learn about my mother's life. The memorial page includes photos, stories, and messages from friends - it's like a living tribute that will last forever.",
+        "memorial": "Margaret Thompson"
+      },
+      {
+        "id": 4,
+        "name": "David Williams",
+        "location": "Birmingham, UK",
+        "date": "September 2024",
+        "text": "I was skeptical at first about a digital memorial, but it's been wonderful. My brother's memorial page has become a gathering place for all of us to share memories, photos, and stories. The plexiglass plaque is modern and elegant - exactly what he would have wanted.",
+        "memorial": "Robert Williams"
+      },
+      {
+        "id": 5,
+        "name": "Jennifer Brown",
+        "location": "Leeds, UK",
+        "date": "August 2024",
+        "text": "The team at CodeOfMemory made the entire process so easy during such a difficult time. The memorial page is beautiful, and the plaque quality is exceptional. Friends and family love being able to visit the memorial page anytime and leave messages.",
+        "memorial": "Patricia Brown"
+      },
+      {
+        "id": 6,
+        "name": "Robert Taylor",
+        "location": "Glasgow, Scotland",
+        "date": "July 2024",
+        "text": "We ordered the gold acrylic plaque for my wife's memorial, and it's absolutely perfect. The memorial page tells her story beautifully with photos and memories from our 40 years together. It's a comfort knowing her memory will be preserved this way.",
+        "memorial": "Catherine Taylor"
+      }
+    ]
   },
   "notFound": {
     "title": "Page Not Found",

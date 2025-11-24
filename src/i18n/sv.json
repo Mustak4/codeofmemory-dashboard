@@ -15,7 +15,8 @@
     "getInTouch": "Kontakta oss",
     "or": "eller",
     "visit": "besök vår",
-    "forAnswers": "för svar"
+    "forAnswers": "för svar",
+    "login": "Logga in"
   },
   "home": {
     "heroTitle": "Skanna. Kom ihåg. För alltid.",
@@ -252,11 +253,72 @@
   "reviews": {
     "title": "Kundrecensioner",
     "subtitle": "Berättelser från familjer som har litat på CodeOfMemory med sina mest värdefulla minnen.",
+    "pageTitle": "Berättelser från familjer",
+    "pageSubtitle": "Hör från dem som har litat på oss med sina mest värdefulla minnen.",
     "rating": "Betyg",
     "readHowItWorks": "Läs hur det fungerar",
     "averageRating": "Genomsnittligt betyg",
     "totalReviews": "Totalt antal recensioner",
-    "inMemoryOf": "Till minne av"
+    "inMemoryOf": "Till minne av",
+    "outOf5": "av 5",
+    "basedOn": "Baserat på",
+    "review": "recension",
+    "reviews": "recensioner",
+    "noReviews": "Inga recensioner tillgängliga ännu.",
+    "readyToCreate": "Redo att skapa ditt minnesmärke?",
+    "joinFamilies": "Gå med familjer som litar på oss för att bevara sina mest värdefulla minnen.",
+    "startTribute": "Starta din hyllning",
+    "contactUs": "Kontakta oss",
+    "reviewList": [
+      {
+        "id": 1,
+        "name": "Sarah Mitchell",
+        "location": "London, UK",
+        "date": "December 2024",
+        "text": "Att skapa ett digitalt minnesmärke för min far var en av de mest meningsfulla sakerna vi har gjort. QR-kodplaketten gör det möjligt för familj och vänner från hela världen att dela minnen och berättelser. Processen var enkel, och supportteamet var otroligt medkännande genom hela processen.",
+        "memorial": "James Mitchell"
+      },
+      {
+        "id": 2,
+        "name": "Michael Chen",
+        "location": "Manchester, UK",
+        "date": "November 2024",
+        "text": "Vi valde skifferplaketten för min mormors minnesmärke, och den är absolut vacker. QR-koden är perfekt graverad, och minnessidan fångar hennes livsberättelse så väl. Den har blivit en plats där hela vår familj kan samlas för att minnas henne.",
+        "memorial": "Li Chen"
+      },
+      {
+        "id": 3,
+        "name": "Emma Thompson",
+        "location": "Edinburgh, Skottland",
+        "date": "Oktober 2024",
+        "text": "Akrylplaketten vi beställde är fantastisk. Den sitter vackert på minnesplatsen, och besökare kan enkelt skanna QR-koden för att lära sig om min mors liv. Minnessidan innehåller foton, berättelser och meddelanden från vänner - det är som en levande hyllning som kommer att vara kvar för alltid.",
+        "memorial": "Margaret Thompson"
+      },
+      {
+        "id": 4,
+        "name": "David Williams",
+        "location": "Birmingham, UK",
+        "date": "September 2024",
+        "text": "Jag var först skeptisk till ett digitalt minnesmärke, men det har varit underbart. Min brors minnessida har blivit en samlingsplats för oss alla att dela minnen, foton och berättelser. Plexiglasplaketten är modern och elegant - precis vad han skulle ha velat.",
+        "memorial": "Robert Williams"
+      },
+      {
+        "id": 5,
+        "name": "Jennifer Brown",
+        "location": "Leeds, UK",
+        "date": "Augusti 2024",
+        "text": "Teamet på CodeOfMemory gjorde hela processen så enkel under en så svår tid. Minnessidan är vacker, och plakettens kvalitet är exceptionell. Vänner och familj älskar att kunna besöka minnessidan när som helst och lämna meddelanden.",
+        "memorial": "Patricia Brown"
+      },
+      {
+        "id": 6,
+        "name": "Robert Taylor",
+        "location": "Glasgow, Skottland",
+        "date": "Juli 2024",
+        "text": "Vi beställde den gyllene akrylplaketten för min frus minnesmärke, och den är absolut perfekt. Minnessidan berättar hennes historia vackert med foton och minnen från våra 40 år tillsammans. Det är en tröst att veta att hennes minne kommer att bevaras på detta sätt.",
+        "memorial": "Catherine Taylor"
+      }
+    ]
   },
   "notFound": {
     "title": "Sidan hittades inte",

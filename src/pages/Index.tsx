@@ -54,7 +54,7 @@ const Index = () => {
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button variant="hero" size="lg" asChild className="px-10 py-6">
-              <Link to="/create">{t("home.createMemorialButton")}</Link>
+              <Link to="/order">{t("home.createMemorialButton")}</Link>
             </Button>
             <Button variant="outline" size="lg" className="px-10 py-6">
               {t("home.viewExampleButton")}

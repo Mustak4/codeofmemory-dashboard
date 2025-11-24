@@ -2,7 +2,7 @@
  * Purchase verification utility
  * 
  * When a user completes a purchase on codeofmemory.com, they are redirected to
- * login.codeofmemory.com with a purchase token. This utility verifies the token
+ * codeofmemory.com/signin with a purchase token. This utility verifies the token
  * against the Supabase database.
  */
 
@@ -93,11 +93,13 @@ export async function verifyPurchaseToken(
 }
 
 /**
- * Checks if we're on the login subdomain
+ * Checks if we're on the main domain (now that everything is combined)
+ * This function is kept for backwards compatibility but always returns true
+ * since we're now on the main domain.
  */
 export function isLoginSubdomain(): boolean {
   if (typeof window === "undefined") return false;
-  return window.location.hostname === "login.codeofmemory.com" || 
-         window.location.hostname.includes("login.");
+  // Now that everything is combined, we're always on the main domain
+  return true;
 }
 

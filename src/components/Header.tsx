@@ -28,9 +28,9 @@ const Header = () => {
   ];
 
   return (
-    <header className="sticky top-0 z-50 py-4">
+    <header className="sticky top-0 left-0 right-0 z-50 py-4">
       <div className="container mx-auto px-6">
-        <div className="bg-card/95 backdrop-blur-md rounded-2xl shadow-lg border border-border/50 px-6 py-4">
+        <div className="backdrop-blur-md rounded-2xl px-6 py-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to={getLocalizedPath("/", language)} className="flex items-center group">
@@ -108,7 +108,7 @@ const Header = () => {
                 className="bg-gradient-to-r from-memory to-earth text-warmth hover:opacity-90 shadow-md hover:shadow-lg transition-all font-medium"
                 asChild
               >
-                <Link to={getLocalizedPath("/create", language)}>
+                <Link to={getLocalizedPath("/order", language)}>
                   {t("common.createMemorial")}
                 </Link>
               </Button>
@@ -171,7 +171,7 @@ const Header = () => {
                 className="bg-gradient-to-r from-memory to-earth text-warmth hover:opacity-90 shadow-md mt-2 font-medium"
                 asChild
               >
-                <Link to={getLocalizedPath("/create", language)} onClick={() => setMobileMenuOpen(false)}>
+                <Link to={getLocalizedPath("/order", language)} onClick={() => setMobileMenuOpen(false)}>
                   {t("common.createMemorial")}
                 </Link>
               </Button>

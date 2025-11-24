@@ -2,38 +2,65 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Check, ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ZoomIn } from "lucide-react";
+import LazyImage from "@/components/LazyImage";
 
 const plaqueOptions = [
-  { id: "steel", name: "Brushed Stainless Steel", price: 79, description: "Modern, weather-resistant finish" },
-  { id: "bronze", name: "Bronze", price: 129, description: "Classic, timeless elegance" },
-  { id: "brass", name: "Brass", price: 119, description: "Warm, traditional look" },
-  { id: "granite", name: "Black Granite", price: 149, description: "Premium stone with engraving" },
+  { 
+    id: "plexiglass", 
+    name: "Black Engraved Plexiglass", 
+    price: 79, 
+    tagline: "Modern, minimal, engraved finish",
+    description: "A sleek black acrylic plaque engraved with a permanent QR code. Durable, elegant, and ideal for both indoor and outdoor use.",
+    image: "/product-images/plexiglass.png"
+  },
+  { 
+    id: "acrylic", 
+    name: "Two-Tone Gold or Silver Acrylic", 
+    price: 99, 
+    tagline: "Elegant metallic dual-layer design",
+    description: "A premium dual-layer acrylic plaque available in gold or silver. The engraved black inner layer creates a timeless, high-contrast finish.",
+    imageGold: "/product-images/acrylic gold.png",
+    imageSilver: "/product-images/acrylic silver.png"
+  },
+  { 
+    id: "slate", 
+    name: "Natural Stone Plaque (Slate)", 
+    price: 119, 
+    tagline: "Authentic, weather-resistant finish",
+    description: "A natural hand-cut stone plaque engraved with precision. Perfect for outdoor memorials, offering durability and a classic, timeless appearance.",
+    image: "/product-images/slate.png"
+  },
 ];
 
 const Order = () => {
-  const [step, setStep] = useState(1);
-  const [selectedPlaque, setSelectedPlaque] = useState("steel");
+  const [showPaymentInfo, setShowPaymentInfo] = useState(false);
+  const [selectedPlaque, setSelectedPlaque] = useState("plexiglass");
+  const [selectedColor, setSelectedColor] = useState<"gold" | "silver">("gold");
+  const [zoomedImage, setZoomedImage] = useState<{ src: string; alt: string } | null>(null);
   const { toast } = useToast();
 
-  const handleNext = () => {
-    if (step < 4) setStep(step + 1);
+  const handleContinue = () => {
+    setShowPaymentInfo(true);
+    // Scroll to payment info section
+    setTimeout(() => {
+      const element = document.getElementById("payment-info");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
   };
 
-  const handleBack = () => {
-    if (step > 1) setStep(step - 1);
-  };
-
-  const handleSubmit = () => {
+  const handleProceedToPayment = () => {
+    // TODO: Redirect to Stripe checkout
+    // window.location.href = stripeCheckoutUrl;
     toast({
-      title: "Order placed",
-      description: "Thank you! We'll send you a confirmation email shortly.",
+      title: "Redirecting to payment",
+      description: "You will be redirected to complete your payment.",
     });
   };
 
@@ -53,237 +80,227 @@ const Order = () => {
           </p>
         </div>
 
-        {/* Progress Steps */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="flex justify-between items-center">
-            {[1, 2, 3, 4].map((num) => (
-              <div key={num} className="flex items-center flex-1">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-medium transition-all duration-300 ${
-                    step >= num
-                      ? "bg-earth text-warmth"
-                      : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {step > num ? <Check className="w-5 h-5" /> : num}
-                </div>
-                {num < 4 && (
-                  <div
-                    className={`flex-1 h-1 mx-2 transition-all duration-300 ${
-                      step > num ? "bg-earth" : "bg-muted"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-3 text-sm text-muted-foreground">
-            <span className={step >= 1 ? "text-memory" : ""}>Plaque</span>
-            <span className={step >= 2 ? "text-memory" : ""}>Details</span>
-            <span className={step >= 3 ? "text-memory" : ""}>Memorial</span>
-            <span className={step >= 4 ? "text-memory" : ""}>Checkout</span>
-          </div>
-        </div>
 
         {/* Form Card */}
-        <Card className="max-w-4xl mx-auto p-10 border-border/50 shadow-lg animate-fade-in bg-card/70 backdrop-blur-sm">
-          {step === 1 && (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-serif text-center mb-6 text-memory">Choose Your Plaque</h2>
-              <RadioGroup value={selectedPlaque} onValueChange={setSelectedPlaque}>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {plaqueOptions.map((option) => (
-                    <label
-                      key={option.id}
-                      className={`relative flex items-start p-6 border-2 rounded-lg cursor-pointer transition-all duration-300 ${
-                        selectedPlaque === option.id
-                          ? "border-earth bg-earth/5"
-                          : "border-border hover:border-earth/50"
-                      }`}
-                    >
-                      <RadioGroupItem value={option.id} className="mt-1" />
-                      <div className="ml-4 flex-1">
-                        <p className="font-serif text-lg text-memory mb-1">{option.name}</p>
-                        <p className="text-sm text-muted-foreground mb-2">{option.description}</p>
-                        <p className="text-2xl font-medium text-memory">£{option.price}</p>
-                      </div>
-                    </label>
-                  ))}
+        <Card className="max-w-7xl mx-auto p-8 md:p-12 border-border/50 shadow-xl animate-fade-in bg-card/80 backdrop-blur-sm">
+          <div className="space-y-8">
+            <h2 className="text-3xl md:text-4xl font-serif text-center mb-8 text-memory">Choose Your Plaque</h2>
+              <RadioGroup 
+                value={selectedPlaque} 
+                onValueChange={(value) => {
+                  setSelectedPlaque(value);
+                  if (value !== "acrylic") {
+                    setSelectedColor("gold");
+                  }
+                }}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {plaqueOptions.map((option) => {
+                    const getImageSrc = (): string => {
+                      if (option.id === "acrylic") {
+                        return selectedColor === "gold" 
+                          ? (option.imageGold || "/product-images/acrylic gold.png")
+                          : (option.imageSilver || "/product-images/acrylic silver.png");
+                      }
+                      return option.image || "";
+                    };
+
+                    const imageSrc = getImageSrc();
+                    const isSelected = selectedPlaque === option.id;
+
+                    return (
+                      <label
+                        key={option.id}
+                        className={`group relative flex flex-col h-full border rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden bg-card shadow-sm hover:shadow-lg ${
+                          isSelected
+                            ? "border-earth border-2 shadow-xl ring-2 ring-earth/20"
+                            : "border-border/60 hover:border-earth/40"
+                        }`}
+                      >
+                        <RadioGroupItem 
+                          value={option.id} 
+                          className="absolute top-4 left-4 z-20 w-5 h-5 border-2 bg-background" 
+                        />
+                        
+                        {/* Product Image */}
+                        <div 
+                          className="relative w-full h-64 bg-gradient-to-b from-muted/40 via-muted/20 to-muted/10 overflow-hidden group/image"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setZoomedImage({ src: imageSrc, alt: option.name });
+                          }}
+                        >
+                          <div className="absolute inset-0 flex items-center justify-center p-6 cursor-zoom-in">
+                            <LazyImage
+                              src={imageSrc}
+                              alt={option.name}
+                              className={`w-full h-full object-contain transition-transform duration-300 ${
+                                isSelected ? "scale-105" : "group-hover:scale-[1.03]"
+                              }`}
+                              priority={isSelected}
+                            />
+                          </div>
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-earth/5 pointer-events-none" />
+                          )}
+                          {/* Zoom Icon Overlay */}
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover/image:bg-black/10 transition-all duration-300 pointer-events-none">
+                            <div className="opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 bg-black/60 backdrop-blur-sm rounded-full p-3">
+                              <ZoomIn className="w-6 h-6 text-white" />
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Product Details */}
+                        <div className="flex flex-col flex-1 p-5 space-y-3">
+                          <div className="flex-1 space-y-2">
+                            <p className="font-serif text-lg text-memory font-semibold leading-tight">
+                              {option.name}
+                            </p>
+                            <p className="text-xs font-medium text-earth uppercase tracking-wider">
+                              {option.tagline}
+                            </p>
+                            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                              {option.description}
+                            </p>
+                          </div>
+                          
+                          <div className="pt-3 space-y-3 border-t border-border/50">
+                            <div className="flex items-center justify-between">
+                              <span className="text-2xl font-serif font-bold text-memory">
+                                ${option.price}
+                              </span>
+                            </div>
+                            
+                            {option.id === "acrylic" && isSelected && (
+                              <div className="flex flex-col gap-2">
+                                <span className="text-xs font-medium text-muted-foreground">Color:</span>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setSelectedColor("gold");
+                                    }}
+                                    className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                                      selectedColor === "gold"
+                                        ? "bg-earth text-warmth shadow-md"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                    }`}
+                                  >
+                                    Gold
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setSelectedColor("silver");
+                                    }}
+                                    className={`flex-1 px-3 py-2 rounded-md text-xs font-medium transition-all ${
+                                      selectedColor === "silver"
+                                        ? "bg-earth text-warmth shadow-md"
+                                        : "bg-muted text-muted-foreground hover:bg-muted/80"
+                                    }`}
+                                  >
+                                    Silver
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               </RadioGroup>
+
+            {/* Navigation */}
+            <div className="flex justify-end mt-10 pt-8 border-t border-border/50">
+              <Button variant="hero" onClick={handleContinue} className="gap-2">
+                Continue
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </div>
-          )}
+          </div>
+        </Card>
 
-          {step === 2 && (
+        {/* Payment Information Section */}
+        {showPaymentInfo && (
+          <Card 
+            id="payment-info"
+            className="max-w-4xl mx-auto mt-12 p-10 border-border/50 shadow-lg animate-fade-in bg-card/70 backdrop-blur-sm"
+          >
             <div className="space-y-6">
-              <h2 className="text-3xl font-serif text-center mb-6 text-memory">Inscription Details</h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="plaque-name" className="text-base mb-2 block">
-                    Name for Plaque
-                  </Label>
-                  <Input
-                    id="plaque-name"
-                    placeholder="Eleanor Rose Thompson"
-                    className="bg-background/50"
-                  />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="plaque-birth" className="text-base mb-2 block">
-                      Birth Year
-                    </Label>
-                    <Input
-                      id="plaque-birth"
-                      placeholder="1945"
-                      className="bg-background/50"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="plaque-death" className="text-base mb-2 block">
-                      Year of Passing
-                    </Label>
-                    <Input
-                      id="plaque-death"
-                      placeholder="2024"
-                      className="bg-background/50"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="plaque-message" className="text-base mb-2 block">
-                    Optional Message (Max 50 characters)
-                  </Label>
-                  <Input
-                    id="plaque-message"
-                    placeholder="Forever in our hearts"
-                    className="bg-background/50"
-                    maxLength={50}
-                  />
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Keep it short—space is limited on the plaque
+              <h2 className="text-3xl font-serif text-center mb-6 text-memory">Next Steps</h2>
+              
+              <div className="space-y-4 text-center">
+                <div className="max-w-2xl mx-auto space-y-4">
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    After you complete your payment, we will verify your order and send you a link to start creating your digital memorial. You'll receive a simple tutorial to guide you through the process.
+                  </p>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    We'll notify you via email once your payment has been verified and your account has been approved. Verification typically takes up to 2 hours.
                   </p>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-serif text-center mb-6 text-memory">Memorial Page Link</h2>
-              <p className="text-center text-muted-foreground mb-6">
-                Your plaque will include a QR code linking to your memorial page. You can create or link an existing memorial.
-              </p>
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-base mb-2 block">Memorial Page Option</Label>
-                  <RadioGroup defaultValue="create">
-                    <div className="space-y-3">
-                      <label className="flex items-start p-4 border-2 border-border rounded-lg cursor-pointer hover:border-earth/50 transition-all">
-                        <RadioGroupItem value="create" className="mt-1" />
-                        <div className="ml-4">
-                          <p className="font-medium text-memory">Create New Memorial</p>
-                          <p className="text-sm text-muted-foreground">Set up a fresh memorial page</p>
-                        </div>
-                      </label>
-                      <label className="flex items-start p-4 border-2 border-border rounded-lg cursor-pointer hover:border-earth/50 transition-all">
-                        <RadioGroupItem value="existing" className="mt-1" />
-                        <div className="ml-4">
-                          <p className="font-medium text-memory">Link Existing Memorial</p>
-                          <p className="text-sm text-muted-foreground">Connect to a memorial you've already created</p>
-                        </div>
-                      </label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-serif text-center mb-6 text-memory">Shipping & Payment</h2>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="full-name" className="text-base mb-2 block">
-                    Full Name
-                  </Label>
-                  <Input id="full-name" className="bg-background/50" />
-                </div>
-
-                <div>
-                  <Label htmlFor="address" className="text-base mb-2 block">
-                    Shipping Address
-                  </Label>
-                  <Textarea id="address" className="bg-background/50 resize-none" rows={3} />
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email" className="text-base mb-2 block">
-                      Email
-                    </Label>
-                    <Input id="email" type="email" className="bg-background/50" />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone" className="text-base mb-2 block">
-                      Phone
-                    </Label>
-                    <Input id="phone" type="tel" className="bg-background/50" />
-                  </div>
-                </div>
-
-                <div className="bg-muted/30 rounded-lg p-6 mt-6">
+                
+                <div className="bg-muted/30 rounded-lg p-6 mt-8">
                   <div className="flex justify-between mb-2">
                     <span className="text-muted-foreground">Plaque</span>
-                    <span className="text-memory">£{selectedPrice}</span>
+                    <span className="text-memory">${selectedPrice}</span>
                   </div>
                   <div className="flex justify-between mb-2">
                     <span className="text-muted-foreground">Memorial Page Setup</span>
                     <span className="text-memory">Included</span>
                   </div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-muted-foreground">Shipping (UK)</span>
-                    <span className="text-memory">£8.99</span>
+                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-memory">$8.99</span>
                   </div>
                   <div className="border-t border-border pt-3 mt-3 flex justify-between">
                     <span className="font-serif text-lg text-memory">Total</span>
-                    <span className="font-serif text-2xl text-memory">£{selectedPrice + 8.99}</span>
+                    <span className="font-serif text-2xl text-memory">${(selectedPrice + 8.99).toFixed(2)}</span>
                   </div>
                 </div>
+
+                <p className="text-sm text-muted-foreground mt-6">
+                  Shipping typically takes 7 to 14 business days
+                </p>
+
+                <Button 
+                  variant="hero" 
+                  onClick={handleProceedToPayment} 
+                  className="gap-2 mt-6 px-10 py-6 text-lg"
+                  size="lg"
+                >
+                  Proceed to Payment
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
               </div>
             </div>
-          )}
-
-          {/* Navigation */}
-          <div className="flex justify-between mt-10 pt-8 border-t border-border/50">
-            <Button
-              variant="ghost"
-              onClick={handleBack}
-              disabled={step === 1}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-
-            {step < 4 ? (
-              <Button variant="hero" onClick={handleNext} className="gap-2">
-                Continue
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            ) : (
-              <Button variant="hero" onClick={handleSubmit} className="gap-2 px-8">
-                Complete Order
-              </Button>
-            )}
-          </div>
-        </Card>
+          </Card>
+        )}
       </main>
 
       <Footer />
+
+      {/* Image Zoom Dialog */}
+      <Dialog open={!!zoomedImage} onOpenChange={(open) => !open && setZoomedImage(null)}>
+        <DialogContent className="max-w-4xl w-full p-0 bg-transparent border-0">
+          {zoomedImage && (
+            <div className="relative w-full max-h-[90vh] flex items-center justify-center">
+              <img
+                src={zoomedImage.src}
+                alt={zoomedImage.alt}
+                className="max-w-full max-h-[90vh] w-auto h-auto object-contain rounded-lg"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
