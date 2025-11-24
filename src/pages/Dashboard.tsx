@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LayoutDashboard, BookOpen, ListChecks, History, CreditCard, ArrowUpRight, Plus, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { LayoutDashboard, BookOpen, ShoppingBag, Plus, MessageSquare, Edit3, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,17 +23,6 @@ type MemorialSummary = {
   heroUrl?: string;
 };
 
-type NextStep = {
-  id: string;
-  title: string;
-  description: string;
-  cta: {
-    label: string;
-    to: string;
-  };
-  status: "ready" | "in-progress" | "blocked";
-};
-
 type ActivityItem = {
   id: string;
   timestamp: string;
@@ -51,19 +40,15 @@ const Dashboard = () => {
     () => [
       { id: "overview", label: "Overview", icon: LayoutDashboard },
       { id: "memorials", label: "Memorials", icon: BookOpen },
-      { id: "tasks", label: "Next Steps", icon: ListChecks },
-      { id: "activity", label: "Activity", icon: History },
-      { id: "billing", label: "Billing", icon: CreditCard },
+      { id: "orders", label: "Purchases", icon: ShoppingBag },
     ],
     [],
   );
 
   const [memorials, setMemorials] = useState<MemorialSummary[]>([]);
   const [loadingMemorials, setLoadingMemorials] = useState(true);
-
-  const nextSteps = useMemo<NextStep[]>(() => [], []);
-
-  const activity = useMemo<ActivityItem[]>(() => [], []);
+  const [activity, setActivity] = useState<ActivityItem[]>([]);
+  const [loadingActivity, setLoadingActivity] = useState(true);
 
   const [activeSection, setActiveSection] = useState<string>("overview");
 
@@ -116,6 +101,140 @@ const Dashboard = () => {
     loadMemorials();
   }, [user, toast]);
 
+  // Load activity feed
+  useEffect(() => {
+    const loadActivity = async () => {
+      if (!user) {
+        setLoadingActivity(false);
+        return;
+      }
+
+      try {
+        setLoadingActivity(true);
+        const activities: ActivityItem[] = [];
+
+        // Get user's memorials to filter activities
+        const { data: userMemorials } = await supabase
+          .from("memorials")
+          .select("id, name")
+          .eq("user_id", user.id);
+
+        if (!userMemorials) {
+          setLoadingActivity(false);
+          return;
+        }
+
+        const memorialIds = userMemorials.map((m) => m.id);
+        const memorialMap = new Map(userMemorials.map((m) => [m.id, m.name]));
+
+        // Get recent memorial updates (within last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const { data: memorialUpdates } = await supabase
+          .from("memorials")
+          .select("id, name, updated_at, created_at")
+          .eq("user_id", user.id)
+          .gte("updated_at", thirtyDaysAgo.toISOString())
+          .order("updated_at", { ascending: false })
+          .limit(10);
+
+        if (memorialUpdates) {
+          memorialUpdates.forEach((memorial) => {
+            // Only show update if it's different from created_at (actual update, not creation)
+            const isUpdate = new Date(memorial.updated_at).getTime() !== new Date(memorial.created_at).getTime();
+            if (isUpdate) {
+              activities.push({
+                id: `memorial-update-${memorial.id}`,
+                timestamp: memorial.updated_at,
+                description: `Updated memorial: ${memorial.name}`,
+                category: "update",
+              });
+            }
+          });
+        }
+
+        // Get recent guestbook submissions
+        if (memorialIds.length > 0) {
+          const { data: submissions } = await supabase
+            .from("guestbook_entries")
+            .select("id, memorial_id, guest_name, created_at, status")
+            .in("memorial_id", memorialIds)
+            .order("created_at", { ascending: false })
+            .limit(20);
+
+          if (submissions) {
+            submissions.forEach((submission) => {
+              const memorialName = memorialMap.get(submission.memorial_id) || "Unknown memorial";
+              const statusText = submission.status === "pending" ? "pending review" : submission.status;
+              activities.push({
+                id: `submission-${submission.id}`,
+                timestamp: submission.created_at,
+                description: `New guest submission from ${submission.guest_name} on ${memorialName} (${statusText})`,
+                category: "submission",
+              });
+            });
+          }
+        }
+
+        // Get recent orders
+        const { data: orders } = await supabase
+          .from("orders")
+          .select("id, created_at, status, amount, currency")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(10);
+
+        if (orders) {
+          orders.forEach((order) => {
+            const amount = (order.amount / 100).toFixed(2);
+            const statusText = order.status === "completed" ? "completed" : order.status;
+            activities.push({
+              id: `order-${order.id}`,
+              timestamp: order.created_at,
+              description: `Order ${statusText}: ${order.currency.toUpperCase()} ${amount}`,
+              category: "system",
+            });
+          });
+        }
+
+        // Get recent gallery additions
+        if (memorialIds.length > 0) {
+          const { data: galleryItems } = await supabase
+            .from("gallery_items")
+            .select("id, memorial_id, created_at")
+            .in("memorial_id", memorialIds)
+            .order("created_at", { ascending: false })
+            .limit(15);
+
+          if (galleryItems) {
+            galleryItems.forEach((item) => {
+              const memorialName = memorialMap.get(item.memorial_id) || "Unknown memorial";
+              activities.push({
+                id: `gallery-${item.id}`,
+                timestamp: item.created_at,
+                description: `Added photo to ${memorialName}`,
+                category: "update",
+              });
+            });
+          }
+        }
+
+        // Sort all activities by timestamp (most recent first)
+        activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+        // Limit to 20 most recent activities
+        setActivity(activities.slice(0, 20));
+      } catch (error) {
+        console.error("Error loading activity:", error);
+      } finally {
+        setLoadingActivity(false);
+      }
+    };
+
+    loadActivity();
+  }, [user]);
+
   useEffect(() => {
     const sectionElements = navItems
       .map((item) => document.getElementById(item.id))
@@ -148,9 +267,6 @@ const Dashboard = () => {
     };
   }, [navItems]);
 
-  const totalMemorials = memorials.length;
-  const publishedMemorials = memorials.filter((mem) => mem.status === "published").length;
-  
   // Calculate progress for each memorial
   const calculateProgress = (memorial: MemorialSummary): number => {
     let progress = 0;
@@ -163,28 +279,6 @@ const Dashboard = () => {
     return progress;
   };
 
-  const stats = [
-    {
-      label: "Memorials",
-      value: `${totalMemorials}`,
-      helper: `${publishedMemorials} published`,
-    },
-    {
-      label: "Draft memorials",
-      value: `${memorials.filter((mem) => mem.status === "draft").length}`,
-      helper: "In progress",
-    },
-    {
-      label: "Storage",
-      value: "0 GB",
-      helper: "of 10 GB plan limit",
-    },
-    {
-      label: "Publish limit",
-      value: `${publishedCount}/${maxAllowed}`,
-      helper: limitReached ? "Order more to publish" : "Can publish more",
-    },
-  ];
 
   const handleNavClick = (sectionId: string) => {
     setActiveSection(sectionId);
@@ -206,14 +300,31 @@ const Dashboard = () => {
     return <Badge className="bg-amber-500/15 text-amber-600">Pending Review</Badge>;
   };
 
-  const renderStepStatusIcon = (status: NextStep["status"]) => {
-    if (status === "ready") {
-      return <CheckCircle2 className="h-4 w-4 text-emerald-500" />;
+  const formatRelativeTime = (timestamp: string) => {
+    const now = new Date();
+    const date = new Date(timestamp);
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    
+    return date.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: date.getFullYear() !== now.getFullYear() ? "numeric" : undefined,
+    });
+  };
+
+  const getActivityIcon = (category: ActivityItem["category"]) => {
+    if (category === "submission") {
+      return <MessageSquare className="h-4 w-4" />;
     }
-    if (status === "in-progress") {
-      return <Clock className="h-4 w-4 text-sky-500" />;
+    if (category === "update") {
+      return <Edit3 className="h-4 w-4" />;
     }
-    return <AlertCircle className="h-4 w-4 text-amber-500" />;
+    return <ShoppingCart className="h-4 w-4" />;
   };
 
   return (
@@ -273,13 +384,13 @@ const Dashboard = () => {
 
           <section id="overview" className="space-y-8">
             <header className="rounded-3xl border bg-background shadow-sm">
-              <div className="flex flex-col gap-4 border-b p-6 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-4 border-b p-6 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Welcome back</p>
-                  <h1 className="mt-1 text-2xl font-semibold tracking-tight">
+                  <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
+                  <p className="mt-2 text-xl text-muted-foreground">
                     {user?.email ?? "Your CodeOfMemory account"}
-                  </h1>
-                  <p className="mt-2 text-sm text-muted-foreground">
+                  </p>
+                  <p className="mt-4 text-sm text-muted-foreground">
                     Create and manage memorial experiences, review guest submissions, and publish when you&apos;re
                     ready.
                   </p>
@@ -290,40 +401,81 @@ const Dashboard = () => {
                   </Button>
                 </div>
               </div>
-              <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat) => (
-                  <Card key={stat.label} className="border-none bg-muted/40 shadow-none">
-                    <CardHeader className="pb-2">
-                      <CardDescription>{stat.label}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-semibold">{stat.value}</div>
-                      <p className="text-xs text-muted-foreground">{stat.helper}</p>
-                    </CardContent>
-                  </Card>
-                ))}
+              
+              {/* Recent Activity */}
+              <div className="p-6">
+                <div className="mb-4">
+                  <h2 className="text-lg font-semibold">Recent activity</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Keep track of edits, submissions, and updates across your account.
+                  </p>
+                </div>
+                <div className="divide-y border-t">
+                  {loadingActivity ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <p className="text-sm text-muted-foreground">Loading activity...</p>
+                    </div>
+                  ) : activity.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <p className="text-sm text-muted-foreground">No recent activity.</p>
+                    </div>
+                  ) : (
+                    activity.map((item) => (
+                      <div key={item.id} className="flex gap-3 py-4">
+                        <div className={cn(
+                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
+                          item.category === "submission" && "bg-amber-100 text-amber-600",
+                          item.category === "update" && "bg-sky-100 text-sky-600",
+                          item.category === "system" && "bg-emerald-100 text-emerald-600",
+                        )}>
+                          {getActivityIcon(item.category)}
+                        </div>
+                        <div className="flex flex-1 flex-col gap-1 md:flex-row md:items-center md:justify-between">
+                          <div>
+                            <p className="text-sm font-medium">{item.description}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {formatRelativeTime(item.timestamp)}
+                            </p>
+                          </div>
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "self-start md:self-center",
+                              item.category === "submission" && "border-amber-200 text-amber-600",
+                              item.category === "update" && "border-sky-200 text-sky-600",
+                              item.category === "system" && "border-emerald-200 text-emerald-600",
+                            )}
+                          >
+                            {item.category === "submission" && "Guest submission"}
+                            {item.category === "update" && "Content update"}
+                            {item.category === "system" && "Order"}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </header>
           </section>
 
           <section id="memorials" className="space-y-5">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-semibold">Your memorials</h2>
-              <p className="text-sm text-muted-foreground">
-                Continue editing, publish drafts, and share with friends and family.
-              </p>
-            </div>
+            <div className="rounded-3xl border bg-background shadow-sm">
+              <div className="border-b p-6">
+                <h2 className="text-xl font-semibold">Your memorials</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Continue editing, publish drafts, and share with friends and family.
+                </p>
+              </div>
 
-            {loadingMemorials ? (
-              <Card className="rounded-2xl border bg-background shadow-sm">
-                <CardContent className="flex flex-col items-center justify-center py-16">
-                  <p className="text-sm text-muted-foreground">Loading memorials...</p>
-                </CardContent>
-              </Card>
+              <div className="p-6">
+                {loadingMemorials ? (
+              <div className="flex flex-col items-center justify-center py-16">
+                <p className="text-sm text-muted-foreground">Loading memorials...</p>
+              </div>
             ) : memorials.length === 0 ? (
-              <Card className="rounded-2xl border bg-background shadow-sm">
-                <CardContent className="flex flex-col items-center justify-center py-16 gap-6">
-                  <p className="text-sm text-muted-foreground">No memorials yet.</p>
+              <div className="flex flex-col items-center justify-center py-16 gap-6">
+                <p className="text-sm text-muted-foreground">No memorials yet.</p>
                   <Button
                     size="lg"
                     onClick={() => {
@@ -344,8 +496,7 @@ const Dashboard = () => {
                     <Plus className="mr-2 h-4 w-4" />
                     Create your memorial
                   </Button>
-                </CardContent>
-              </Card>
+              </div>
             ) : (
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {memorials.map((memorial) => {
@@ -419,107 +570,24 @@ const Dashboard = () => {
                 </Card>
               </div>
             )}
-          </section>
-
-          <section id="tasks" className="space-y-5">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-semibold">Next steps</h2>
-              <p className="text-sm text-muted-foreground">
-                Recommended actions to get your memorials ready for visitors.
-              </p>
-            </div>
-            {nextSteps.length === 0 ? (
-              <Card className="rounded-2xl border bg-background">
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                  <p className="text-sm text-muted-foreground">No next steps available.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                {nextSteps.map((step) => (
-                <Card key={step.id} className="rounded-2xl border bg-background">
-                  <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                    <div>
-                      <CardTitle className="text-base">{step.title}</CardTitle>
-                      <CardDescription>{step.description}</CardDescription>
-                    </div>
-                    <div className="rounded-full bg-muted p-2">{renderStepStatusIcon(step.status)}</div>
-                  </CardHeader>
-                  <CardFooter className="pt-0">
-                    <Button
-                      variant="secondary"
-                      className="w-full justify-between"
-                      onClick={() => navigate(step.cta.to)}
-                    >
-                      {step.cta.label}
-                      <ArrowUpRight className="h-4 w-4" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
               </div>
-            )}
+            </div>
           </section>
 
-          <section id="activity" className="space-y-5">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-semibold">Recent activity</h2>
-              <p className="text-sm text-muted-foreground">
-                Keep track of edits, submissions, and billing updates across your account.
-              </p>
+          <section id="orders" className="space-y-5 pb-10">
+            <div className="rounded-3xl border bg-background shadow-sm">
+              <div className="border-b p-6">
+                <h2 className="text-xl font-semibold">Order History</h2>
+                <p className="text-sm text-muted-foreground mt-2">
+                  View your memorial QR code purchases and order details.
+                </p>
+              </div>
+              <div className="p-6">
+                <div className="flex flex-col items-center justify-center py-12">
+                  <p className="text-sm text-muted-foreground">No orders yet. Order your first memorial QR code to get started.</p>
+                </div>
+              </div>
             </div>
-            <Card className="rounded-2xl border bg-background">
-              <CardContent className="divide-y px-0">
-                {activity.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <p className="text-sm text-muted-foreground">No recent activity.</p>
-                  </div>
-                ) : (
-                  activity.map((item, index) => (
-                  <div key={item.id} className="flex flex-col gap-1 px-6 py-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                      <p className="text-sm font-medium">{item.description}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(item.timestamp).toLocaleString(undefined, {
-                          month: "short",
-                          day: "numeric",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}
-                      </p>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "self-start md:self-center",
-                        item.category === "submission" && "border-amber-200 text-amber-600",
-                        item.category === "update" && "border-sky-200 text-sky-600",
-                        item.category === "system" && "border-emerald-200 text-emerald-600",
-                      )}
-                    >
-                      {item.category === "submission" && "Guest submission"}
-                      {item.category === "update" && "Content update"}
-                      {item.category === "system" && "System"}
-                    </Badge>
-                  </div>
-                ))
-                )}
-              </CardContent>
-            </Card>
-          </section>
-
-          <section id="billing" className="space-y-5 pb-10">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-xl font-semibold">Plan & billing</h2>
-              <p className="text-sm text-muted-foreground">
-                Manage your subscription, invoices, and plan upgrades.
-              </p>
-            </div>
-            <Card className="rounded-2xl border bg-background">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <p className="text-sm text-muted-foreground">No billing information available.</p>
-              </CardContent>
-            </Card>
           </section>
         </main>
       </div>

@@ -1069,7 +1069,6 @@ const MemorialProfileEditor = () => {
             <TabsTrigger value="media">Gallery & Media</TabsTrigger>
             <TabsTrigger value="family">Family</TabsTrigger>
             <TabsTrigger value="submissions">Guest submissions</TabsTrigger>
-            <TabsTrigger value="theme">Theme</TabsTrigger>
           </TabsList>
 
           <TabsContent value="details">
@@ -1791,112 +1790,6 @@ const MemorialProfileEditor = () => {
                   </Label>
                 </div>
                 <Button onClick={() => handleSave("Submissions settings")}>Save moderation settings</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="theme">
-            <Card>
-              <CardHeader>
-                <CardTitle>Theme & appearance</CardTitle>
-                <CardDescription>Customize colors to match the memorial plaque or family preferences.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2 rounded-xl border bg-background p-4">
-                  <Label htmlFor="primary-color">Primary color</Label>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      id="primary-color"
-                      type="color"
-                      value={form.theme.primary}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, primary: event.target.value },
-                        })
-                      }
-                    />
-                    <Input
-                      value={form.theme.primary}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, primary: event.target.value },
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2 rounded-xl border bg-background p-4">
-                  <Label htmlFor="accent-color">Accent color</Label>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      id="accent-color"
-                      type="color"
-                      value={form.theme.accent}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, accent: event.target.value },
-                        })
-                      }
-                    />
-                    <Input
-                      value={form.theme.accent}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, accent: event.target.value },
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2 rounded-xl border bg-background p-4 md:col-span-2">
-                  <Label htmlFor="background-color">Background</Label>
-                  <div className="flex items-center gap-3">
-                    <Input
-                      id="background-color"
-                      type="color"
-                      value={form.theme.background}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, background: event.target.value },
-                        })
-                      }
-                    />
-                    <Input
-                      value={form.theme.background}
-                      onChange={(event) =>
-                        setForm({
-                          ...form,
-                          theme: { ...form.theme, background: event.target.value },
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="md:col-span-2">
-                  <h3 className="text-sm font-semibold text-muted-foreground">Preview</h3>
-                  <div className="mt-3 rounded-xl border bg-background p-6 shadow-inner">
-                    <div
-                      className="rounded-xl p-6 text-center text-white"
-                      style={{
-                        background: `linear-gradient(135deg, ${form.theme.primary}, ${form.theme.accent})`,
-                      }}
-                    >
-                      <div className="mx-auto h-16 w-16 rounded-full border-2 border-white/40 bg-white/30" />
-                      <h4 className="mt-3 text-lg font-semibold">{form.name}</h4>
-                      <p className="text-sm">
-                        {new Date(form.dateOfBirth).getFullYear()} – {new Date(form.dateOfDeath).getFullYear()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-end">
-                <Button onClick={() => handleSave("Theme settings")}>Save theme</Button>
               </CardFooter>
             </Card>
           </TabsContent>

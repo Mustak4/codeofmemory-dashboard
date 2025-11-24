@@ -29,14 +29,14 @@ const Footer = () => {
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">
               Preserving memories with dignity through technology and love.
             </p>
-            <div className="flex flex-col gap-2">
-              {!user ? (
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/signin">{t("common.login")}</Link>
-                </Button>
-              ) : null}
-              <Button variant="default" size="sm" asChild className="bg-memory text-warmth hover:bg-memory/90">
-                <Link to="/create-memorial">{t("common.createMemorial")}</Link>
+            <div className="flex flex-col gap-2 w-full">
+              <Button variant="outline" size="sm" asChild className="w-full border-memory text-memory hover:bg-memory/10">
+                <Link to={user ? "/dashboard" : "/signin"}>
+                  {user ? "Login" : t("common.login")}
+                </Link>
+              </Button>
+              <Button variant="default" size="sm" asChild className="w-full bg-memory text-warmth hover:bg-memory/90">
+                <Link to={getLocalizedPath("/order", language)}>{t("common.createMemorial")}</Link>
               </Button>
             </div>
           </div>
